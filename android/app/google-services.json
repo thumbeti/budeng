@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "604468657973",
+    "firebase_url": "https://budgetengineers-6828e.firebaseio.com",
+    "project_id": "budgetengineers-6828e",
+    "storage_bucket": "budgetengineers-6828e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604468657973:android:f6ae8ee6bbbbc01630167c",
+        "android_client_info": {
+          "package_name": "com.budgetengineers.budeng"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "604468657973-qvugvnet8sbf5o5881uo2827scb49hpm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.budgetengineers.budeng",
+            "certificate_hash": "c53ad7f691bc6dfdf57a66271ebe21cf5f7e5332"
+          }
+        },
+        {
+          "client_id": "604468657973-941277sjdtv3msbvt8hncgi58vit62c9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkNGt2V909-8z33YfMXoxEgBOWqbY1RYA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "604468657973-941277sjdtv3msbvt8hncgi58vit62c9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
