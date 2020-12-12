@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:budeng/sign_in.dart';
 
 import 'first_screen.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -19,8 +23,20 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              FlutterLogo(size: 150),
-              SizedBox(height: 50),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                alignment: Alignment.center,
+                color: Colors.white,
+                child: SizedBox(
+                  height: 100.0,
+                  child: Image(
+                    alignment: Alignment.center,
+                    image: AssetImage("assets/BE_logo.PNG"),
+                    //fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
               _signInButton(),
             ],
           ),
@@ -31,17 +47,28 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _signInButton() {
     return OutlineButton(
-      splashColor: Colors.grey,
+      splashColor: Colors.black,
       onPressed: () {
         signInWithGoogle().then((result) {
           if (result != null) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) {
-                  return FirstScreen();
-                },
-              ),
-            );
+            print('loggen in user: ' + name + ' UID: ' + uid);
+
+            //addUserRecord();
+            Future<bool> userExists = _checkIfUserRegistered();
+            userExists
+                .then((bool x) {
+                  print('retval of check user :  $x');
+                  if (x == false) {
+                    print("User not present DB..");
+                    addUserRecord();
+                  } else {
+                    print('retval of check user .. $x');
+                  }
+                })
+                .catchError((e) => print('in catch error' + e.toString()))
+                .whenComplete(() {
+                  print('On success/error its commpeted');
+                });
           }
         });
       },
@@ -61,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                 'Sign in with Google',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.grey,
+                  color: Colors.black,
                 ),
               ),
             )
@@ -69,5 +96,39 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  Future<bool> _checkIfUserRegistered() async {
+    bool retval = false;
+    final User currentUser = await _auth.currentUser;
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(currentUser.email)
+        .get()
+        .then((value) {
+      if (value.data() == null) {
+        print('User does not exist.');
+        retval = false;
+      } else {
+        print('DB values: ');
+        print(value.data().entries.elementAt(1).toString());
+        retval = true;
+      }
+    });
+
+    print('Exiting: ' + retval.toString());
+    return retval;
+  }
+
+  void addUserRecord() async {
+    final User currentUser = await _auth.currentUser;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUser.email)
+        .set({
+      'name': 'SivaRam',
+      'phoneNumber': '+165055599000',
+      'more': 'moreData'
+    });
   }
 }
