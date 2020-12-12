@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:budeng/sign_in.dart';
+import 'package:budeng/registration.dart';
 
 import 'first_screen.dart';
 
@@ -60,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                   print('retval of check user :  $x');
                   if (x == false) {
                     print("User not present DB..");
-                    addUserRecord();
+                    registerUser();
                   } else {
                     print('retval of check user .. $x');
                   }
@@ -95,6 +96,13 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       ),
+    );
+  }
+
+  void registerUser() {
+    print('Welcome to Budget Engineering.. going for regestration.');
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => Registration()),
     );
   }
 
