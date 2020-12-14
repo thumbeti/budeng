@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:budeng/login_page.dart';
 import 'package:budeng/sign_in.dart';
 
-class FirstScreen extends StatelessWidget {
+class AdminScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +28,7 @@ class FirstScreen extends StatelessWidget {
               ),
               SizedBox(height: 40),
               Text(
-                'NAME',
+                'Admin NAME',
                 style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,

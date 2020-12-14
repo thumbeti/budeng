@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
-import 'Login2Page.dart';
-import 'SignUpPage.dart';
 
 void main() => runApp(MyApp());
 
@@ -10,11 +8,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
+      home: LoginPage(),
       routes: {
         '/LoginPage': (context)=>LoginPage(),
-        '/Login2Page': (context)=>Login2Page(),
-        '/SignUpPage': (context)=>SignUpPage(),
       },
     );
   }
@@ -35,7 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             SizedBox(height: 50,),
             Center(
-              child: Text("Welcome", style: TextStyle(
+              child: Text("Welcome To", style: TextStyle(
                 fontSize: 40,
                 fontWeight: FontWeight.bold,
               ),),
@@ -55,16 +51,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   stops: [0,1],
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(15)),
-              ),
-              child: InkWell(
-                onTap: openSignUp,
-                child: Center(
-                  child: Text("Sign Up", style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 25,
-                  ),),
-                ),
               ),
             ),
             SizedBox(height: 20,),
@@ -94,10 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-  void openSignUp()
-  {
-    Navigator.pushNamed(context, '/SignUpPage');
-  }
+
   void openLogin()
   {
     Navigator.pushNamed(context, '/LoginPage');

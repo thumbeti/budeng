@@ -1,10 +1,10 @@
+import 'package:budeng/user_dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:budeng/sign_in.dart';
 import 'package:budeng/registration.dart';
-
-import 'first_screen.dart';
+import 'package:budeng/admin_screen.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -14,6 +14,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  User currentUser;
+  String userType;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +28,14 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              SizedBox(height: 50,),
+              Center(
+                child: Text("Welcome To", style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                ),),
+              ),
+              SizedBox(height: 10,),
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 alignment: Alignment.center,
@@ -52,24 +64,29 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {
         signInWithGoogle().then((result) {
           if (result != null) {
-            print('loggen in user: ' + name + ' UID: ' + uid);
+            print('logged in user: ' + name + ' UID: ' + uid);
 
-            //addUserRecord();
             Future<bool> userExists = _checkIfUserRegistered();
             userExists
                 .then((bool x) {
-                  print('retval of check user :  $x');
                   if (x == false) {
-                    print("User not present DB..");
+                    print("User not yet registered.");
                     registerUser();
                   } else {
-                    print('retval of check user .. $x');
+                    print('User already registered.');
+                    if(userType == 'Regular') {
+                      Navigator.of(context).push(
+                        //MaterialPageRoute<void>(builder: (_) => BEServices()),
+                        MaterialPageRoute<void>(builder: (_) => UserDashboard()),
+                      );
+                    } else {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(builder: (_) => AdminScreen()),
+                      );
+                    }
                   }
                 })
-                .catchError((e) => print('in catch error' + e.toString()))
-                .whenComplete(() {
-                  print('On success/error its commpeted');
-                });
+                .catchError((e) => print('in catch error' + e.toString()));
           }
         });
       },
@@ -100,15 +117,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void registerUser() {
-    print('Welcome to Budget Engineering.. going for regestration.');
+    print('Welcome to Budget Engineering.. going for registration.' + currentUser.displayName);
     Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => Registration()),
+      MaterialPageRoute<void>(builder: (_) => Registration(currentUser)),
     );
   }
 
   Future<bool> _checkIfUserRegistered() async {
     bool retval = false;
-    final User currentUser = await _auth.currentUser;
+    currentUser = _auth.currentUser;
     await FirebaseFirestore.instance
         .collection("users")
         .doc(currentUser.email)
@@ -119,24 +136,13 @@ class _LoginPageState extends State<LoginPage> {
         retval = false;
       } else {
         print('DB values: ');
-        print(value.data().entries.elementAt(1).toString());
+        Map<String, dynamic> data = value.data();
+        userType = data['userType'];
         retval = true;
       }
     });
 
     print('Exiting: ' + retval.toString());
     return retval;
-  }
-
-  void addUserRecord() async {
-    final User currentUser = await _auth.currentUser;
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(currentUser.email)
-        .set({
-      'name': 'SivaRam',
-      'phoneNumber': '+165055599000',
-      'more': 'moreData'
-    });
   }
 }
