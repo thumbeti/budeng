@@ -12,7 +12,7 @@ class Registration2 extends StatefulWidget {
 }
 
 class _Registration2State extends State<Registration2> {
-  final _formKey = GlobalKey();
+  final _formKey = GlobalKey<FormState>();
 
   String userName, phoneNum, address1, address2, city, country;
 
@@ -94,8 +94,14 @@ class _Registration2State extends State<Registration2> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: TextField(
+                  child: TextFormField(
                     // controller: _taskNameController,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter Full Name';
+                      }
+                      return null;
+                    },
                     onChanged: (String userName) {
                       getUserName(userName);
                     },
@@ -183,6 +189,10 @@ class _Registration2State extends State<Registration2> {
                     RaisedButton(
                       color: Colors.blueAccent,
                       onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          // If the form is valid, display a Snackbar.
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Processing Data')));
+                        }
                         addUserDetails();
                         Navigator.of(context).push(
                             //MaterialPageRoute<void>(builder: (_) => OrderingMenu(phoneNum))
