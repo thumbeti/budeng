@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:budeng/sign_in.dart';
 import 'package:budeng/registration.dart';
 import 'package:budeng/admin_screen.dart';
+import 'package:budeng/constants/colors.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -21,96 +22,97 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.white,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(height: 50,),
-              Center(
-                child: Text("Welcome To", style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                ),),
-              ),
-              SizedBox(height: 10,),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                alignment: Alignment.center,
-                color: Colors.white,
-                child: SizedBox(
-                  height: 100.0,
-                  child: Image(
-                    alignment: Alignment.center,
-                    image: AssetImage("assets/BE_logo.PNG"),
-                    //fit: BoxFit.fill,
-                  ),
+        backgroundColor: darkBg,
+        body: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(),
+                Column(
+                  children: [
+                    Text(
+                      'Welcome To',
+                      style: TextStyle(
+                          fontFamily: 'CircularStd-Bold',
+                          fontSize: 32,
+                          color: Colors.white),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 25.0),
+                      child: Container(
+                          height: 230,
+                          child: Image.asset(
+                            'assets/images/Group 57.png',
+                          )),
+                    )
+                  ],
                 ),
-              ),
-              SizedBox(height: 10),
-              _signInButton(),
-            ],
+                signInButton(context),
+              ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
-  Widget _signInButton() {
-    return OutlineButton(
-      splashColor: Colors.black,
-      onPressed: () {
+  InkWell signInButton(BuildContext context) {
+    return InkWell(
+      onTap: () {
         signInWithGoogle().then((result) {
           if (result != null) {
             print('logged in user: ' + name + ' UID: ' + uid);
-
             Future<bool> userExists = _checkIfUserRegistered();
-            userExists
-                .then((bool x) {
-                  if (x == false) {
-                    print("User not yet registered.");
-                    registerUser();
-                  } else {
-                    print('User already registered.');
-                    if(userType == 'Regular') {
-                      Navigator.of(context).push(
-                        //MaterialPageRoute<void>(builder: (_) => BEServices()),
-                        MaterialPageRoute<void>(builder: (_) => UserDashboard()),
-                      );
-                    } else {
-                      Navigator.of(context).push(
-                        MaterialPageRoute<void>(builder: (_) => AdminScreen()),
-                      );
-                    }
-                  }
-                })
-                .catchError((e) => print('in catch error' + e.toString()));
+            userExists.then((bool x) {
+              if (x == false) {
+                print("User not yet registered.");
+                registerUser();
+              } else {
+                print('User already registered.');
+                if (userType == 'Regular') {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(builder: (_) => UserDashboard()),
+                  );
+                } else {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(builder: (_) => AdminScreen()),
+                  );
+                }
+              }
+            }).catchError((e) => print('in catch error' + e.toString()));
+          } else {
+            print('SIVA: login failed...');
           }
         });
       },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-      highlightElevation: 0,
-      borderSide: BorderSide(color: Colors.grey),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image(image: AssetImage("assets/google_logo.png"), height: 35.0),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(
-                'Sign in with Google',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
+        padding: const EdgeInsets.only(right: 35, left: 35, bottom: 148.0),
+        child: Container(
+          height: 65,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: lightBg,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                    height: 35,
+                    child: Image.asset("assets/images/googlelogo.png")),
+                SizedBox(
+                  width: 10,
                 ),
-              ),
-            )
-          ],
+                Text(
+                  'Login With Google',
+                  style: TextStyle(
+                      fontFamily: 'CircularStd-Medium',
+                      fontSize: 19,
+                      color: darkBg),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
