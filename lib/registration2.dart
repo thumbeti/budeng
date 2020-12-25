@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:budeng/user_dashboard.dart';
 
-class Registration extends StatefulWidget {
+class Registration2 extends StatefulWidget {
   final User currentUser;
-  const Registration(this.currentUser);
+  const Registration2(this.currentUser);
   @override
-  _RegistrationState createState() => _RegistrationState();
+  _Registration2State createState() => _Registration2State();
 }
 
-class _RegistrationState extends State<Registration> {
+class _Registration2State extends State<Registration2> {
   final _formKey = GlobalKey();
 
   String userName, phoneNum, address1, address2, city, country;
