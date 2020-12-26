@@ -175,7 +175,7 @@ class _UserRegistrationState extends State<UserRegistration> {
                                             keyboardType:
                                                 TextInputType.multiline,
                                             decoration: new InputDecoration(
-                                              hintText: 'Name',
+                                              hintText: name,
                                               hintStyle: TextStyle(
                                                   fontFamily:
                                                       'CircularStd-Book',
