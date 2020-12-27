@@ -1,4 +1,5 @@
-import 'package:budeng/subcribe_property.dart';
+import 'package:budeng/subscribe_property.dart';
+import 'package:budeng/user_dashboard.dart';
 import 'package:flutter/material.dart';
 
 class BEServices extends StatelessWidget {
@@ -66,7 +67,8 @@ class BEServices extends StatelessWidget {
               SizedBox(height: 30),
               RaisedButton(
                 onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(builder: (_) => SubscribeProperty()),
+                    //MaterialPageRoute<void>(builder: (_) => SubscribeProperty()),
+                    MaterialPageRoute<void>(builder: (_) => UserDashboard()),
                 ),
                 color: Colors.blue[800],
                 child: Padding(

@@ -1,12 +1,11 @@
-import 'package:budeng/user_dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:budeng/sign_in.dart';
-import 'package:budeng/registration2.dart';
 import 'package:budeng/admin_screen.dart';
 import 'package:budeng/constants/colors.dart';
 import 'package:budeng/user_registration.dart';
+import 'package:budeng/home.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -71,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                 print('User already registered.');
                 if (userType == 'Regular') {
                   Navigator.of(context).push(
-                    MaterialPageRoute<void>(builder: (_) => UserDashboard()),
+                    MaterialPageRoute<void>(builder: (_) => Home(currentUser)),
                   );
                 } else {
                   Navigator.of(context).push(
@@ -122,7 +121,6 @@ class _LoginPageState extends State<LoginPage> {
   void registerUser() {
     print('Welcome to Budget Engineering.. going for registration.' + currentUser.displayName);
     Navigator.of(context).push(
-      //MaterialPageRoute<void>(builder: (_) => Registration2(currentUser)),
       MaterialPageRoute<void>(builder: (_) => UserRegistration(currentUser)),
     );
   }

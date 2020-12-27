@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:budeng/user_dashboard.dart';
 
-class Registration extends StatefulWidget {
-  final User currentUser;
-  const Registration(this.currentUser);
+class SubscribeService extends StatefulWidget {
   @override
-  _RegistrationState createState() => _RegistrationState();
+  _SubscribeServiceState createState() => _SubscribeServiceState();
 }
 
-class _RegistrationState extends State<Registration> {
+class _SubscribeServiceState extends State<SubscribeService> {
   final _formKey = GlobalKey();
 
   String userName, phoneNum, address1, address2, city, country;
@@ -41,33 +39,13 @@ class _RegistrationState extends State<Registration> {
   }
 
   addUserDetails() {
-    DocumentReference ds =
-        FirebaseFirestore.instance.collection('users').doc(widget.currentUser.email);
-
-    Map<String, dynamic> users = {
-      'userName': userName,
-      'email': widget.currentUser.email,
-      'phoneNum': phoneNum,
-      'address1': address1,
-      'address2': address2,
-      'city': city,
-      'country': country,
-      'userType': 'Regular',
-    };
-
-    ds.set(users).whenComplete(() {
-      Text("Added");
-      print("user added..!");
-    });
+    // TODO
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text('User Registration'),
-      ),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
         child: Builder(
@@ -81,11 +59,11 @@ class _RegistrationState extends State<Registration> {
                 ),
                 Center(
                   child: Text(
-                    "Welcome " + widget.currentUser.displayName
-                        + ".\n Please provide the following details:",
+                    "Subscription Page \n",
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.normal,
+                        fontSize: 20,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.deepOrangeAccent
                     ),
                   ),
                 ),
@@ -102,18 +80,6 @@ class _RegistrationState extends State<Registration> {
                     decoration: InputDecoration(
                       labelText: "Full Name",
                       icon: Icon(Icons.person),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: TextField(
-                    onChanged: (String phoneNum) {
-                      getPhoneNum(phoneNum);
-                    },
-                    decoration: InputDecoration(
-                      labelText: "Phone Number",
-                      icon: Icon(Icons.contact_phone),
                     ),
                   ),
                 ),
@@ -185,12 +151,12 @@ class _RegistrationState extends State<Registration> {
                       onPressed: () {
                         addUserDetails();
                         Navigator.of(context).push(
-                            //MaterialPageRoute<void>(builder: (_) => OrderingMenu(phoneNum))
+                          //MaterialPageRoute<void>(builder: (_) => OrderingMenu(phoneNum))
                             MaterialPageRoute<void>(
                                 builder: (_) => UserDashboard()));
                       },
                       child: const Text(
-                        "Submit",
+                        "Payment",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

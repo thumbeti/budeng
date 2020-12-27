@@ -3,10 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:budeng/constants/colors.dart';
 import 'package:budeng/user_dashboard.dart';
 import 'package:flutter/cupertino.dart';
-//import 'package:be_app/ui/home.dart';
-//import 'package:be_app/ui/search.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:budeng/home.dart';
 
 class UserRegistration extends StatefulWidget {
   final User currentUser;
@@ -80,8 +79,9 @@ class _UserRegistrationState extends State<UserRegistration> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                            height: 40,
-                            child: Image.asset('assets/images/Group7.png')),
+                          height: 40,
+                          child: Image.asset('assets/images/Group7.png'),
+                        ),
                         InkWell(
                           onTap: () {
                             Navigator.push(
@@ -311,8 +311,7 @@ class _UserRegistrationState extends State<UserRegistration> {
                                             style: TextStyle(
                                                 fontFamily: 'CircularStd-Book',
                                                 fontSize: 16,
-                                                color: Color(0xffA2A2A2)
-                                            ),
+                                                color: Color(0xffA2A2A2)),
                                             keyboardType:
                                                 TextInputType.multiline,
                                             decoration: new InputDecoration(
@@ -411,12 +410,13 @@ class _UserRegistrationState extends State<UserRegistration> {
                     onTap: () {
                       if (_formKey.currentState.validate()) {
                         // If the form is valid, display a Snackbar.
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Processing Data')));
+                        //ScaffoldMessenger.of(context).showSnackBar(
+                        //    SnackBar(content: Text('Processing Data')));
                         addUserDetails();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => UserDashboard()),
+                              builder: (context) => Home(widget.currentUser)),
                         );
                       }
                     },
