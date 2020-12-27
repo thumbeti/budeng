@@ -15,44 +15,126 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   User currentUser;
   String userType;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: darkBg,
-        body: SafeArea(
+      backgroundColor: darkBg,
+      body: SingleChildScrollView(
+        child: SafeArea(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(),
-                Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       'Welcome To',
                       style: TextStyle(
                           fontFamily: 'CircularStd-Bold',
-                          fontSize: 32,
+                          fontSize: 25,
                           color: Colors.white),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 25.0),
                       child: Container(
-                          height: 230,
+                          height: 80,
                           child: Image.asset(
                             'assets/images/Group 57.png',
                           )),
                     )
                   ],
                 ),
+                Column(
+                  children: [
+                    Text(
+                      'Services offered by Budget Engineers',
+                      style: TextStyle(
+                          fontFamily: 'CircularStd-Bold',
+                          fontSize: 23,
+                          color: Colors.white),
+                    ),
+                    Container(
+                      width: 370,
+                      child: Divider(
+                        thickness: 4,
+                        color: Colors.white,
+                        height: 10,
+                      ),
+                    ),
+                  ],
+                ),
+                serviceInfoWidget(
+                    false,
+                    "Vigilance of Plot",
+                    "Monthly video tour of plot \n"
+                        "\u{20B9}1.25/sqft (including GST)"),
+                serviceInfoWidget(
+                    true,
+                    "Cleaning plot",
+                    "Cutting un-wanted-grass / shrubs \n"
+                        "\u{20B9}1.85/sqft (including GST)"),
+                serviceInfoWidget(
+                    false,
+                    "Fencing Plot",
+                    "\u{20B9}26.25/sqft (including GST) \n"
+                        "Barb wire fencing with MS gate"),
+                serviceInfoWidget(
+                    true,
+                    "Compound Wall",
+                    "\u{20B9}120.45/sqft (including GST) \n"
+                        " 4 ft height solid block wall with MS gate"),
+                serviceInfoWidget(
+                    false,
+                    "EC / Khatha",
+                    "Consulting charges: \u{20B9}1/sqft (including GST) \n"
+                        "Liaisons with Govt. officials to get documentation"),
+                serviceInfoWidget(
+                    true,
+                    "Rent",
+                    "Consulting charges: \u{20B9}1/sqft (including GST) \n"
+                        "BE will manage to get tenent & agreement formalities\n"
+                        "BE charges additional half month rental as service charge"),
                 signInButton(context),
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
+  }
+
+  Padding serviceInfoWidget(
+      bool isLeft, String serviceName, String serviceInfo) {
+    return Padding(
+      padding: (isLeft)
+          ? const EdgeInsets.only(left: 20, top: 10.0)
+          : const EdgeInsets.only(right: 50, top: 10.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            serviceName,
+            textAlign: TextAlign.start,
+            style: TextStyle(
+                fontFamily: 'CircularStd-Bold',
+                fontSize: 20,
+                color: Colors.yellow),
+          ),
+          Text(
+            serviceInfo,
+            //textAlign: TextAlign.start,
+            style: TextStyle(
+                fontFamily: 'CircularStd-Bold',
+                fontSize: 15,
+                color: Colors.white),
+          ),
+        ],
+      ),
+    );
   }
 
   InkWell signInButton(BuildContext context) {
@@ -85,9 +167,9 @@ class _LoginPageState extends State<LoginPage> {
         });
       },
       child: Padding(
-        padding: const EdgeInsets.only(right: 35, left: 35, bottom: 148.0),
+        padding: const EdgeInsets.only(right: 35, left: 35, top: 30.0),
         child: Container(
-          height: 65,
+          height: 50,
           width: double.infinity,
           decoration: BoxDecoration(
             color: lightBg,
@@ -119,7 +201,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void registerUser() {
-    print('Welcome to Budget Engineering.. going for registration.' + currentUser.displayName);
+    print('Welcome to Budget Engineering.. going for registration.' +
+        currentUser.displayName);
     Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => UserRegistration(currentUser)),
     );

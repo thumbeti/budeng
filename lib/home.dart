@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:budeng/constants/service_tasks.dart';
 import 'package:budeng/subscribe_property.dart';
+import 'package:expandable_text/expandable_text.dart';
 
 class Home extends StatefulWidget {
   final User currentUser;
@@ -187,6 +188,23 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: buttonBg,
+        iconSize: 30,
+        onTap: (value)=>{},
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: new Image.asset("assets/images/30-technical2.png"),
+            label: "Services",
+          ),
+        ],
+
       ),
     );
   }
@@ -503,10 +521,40 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     'Choose A Service',
                     style: TextStyle(
                         fontFamily: 'CircularStd-Bold',
-                        fontSize: 32,
+                        fontSize: 22,
                         color: Color(0xff000000)),
                   ),
                 ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 5),
+              child: new CheckboxListTile(
+                checkColor: buttonBg,
+                activeColor: Colors.white,
+                title: Text(
+                  "Test .. test",
+                  style: TextStyle(
+                      fontFamily: 'CircularStd-Book',
+                      fontSize: 20,
+                      color: Color(0xff000000)
+                          .withOpacity(1)),
+                ),
+                subtitle: ExpandableText(
+                  'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
+                  expandText: 'show more',
+                  collapseText: 'show less',
+                  maxLines: 1,
+                  linkColor: Colors.blue,
+                ),
+                value: svs_inputs[0],
+                onChanged: (bool val) {
+                  setState(() {
+                    svs_inputs[0] = val;
+                  });
+                },
+                controlAffinity:
+                ListTileControlAffinity.leading,
               ),
             ),
             Padding(
