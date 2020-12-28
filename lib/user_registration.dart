@@ -5,7 +5,7 @@ import 'package:budeng/user_dashboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:budeng/home.dart';
+import 'package:budeng/home2.dart';
 
 class UserRegistration extends StatefulWidget {
   final User currentUser;
@@ -416,7 +416,7 @@ class _UserRegistrationState extends State<UserRegistration> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Home(widget.currentUser)),
+                              builder: (context) => Home2(widget.currentUser)),
                         );
                       }
                     },

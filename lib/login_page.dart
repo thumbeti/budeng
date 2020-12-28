@@ -1,3 +1,4 @@
+import 'package:budeng/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,7 +6,7 @@ import 'package:budeng/sign_in.dart';
 import 'package:budeng/admin_screen.dart';
 import 'package:budeng/constants/colors.dart';
 import 'package:budeng/user_registration.dart';
-import 'package:budeng/home.dart';
+import 'package:budeng/home2.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 

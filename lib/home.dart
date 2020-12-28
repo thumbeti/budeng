@@ -19,10 +19,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   TabController _controller;
   int _selectedIndex = 0;
 
-  List<bool> svs_inputs = [];
-  //List svs_inputs = new List<bool>();
-  List<bool> mvs_inputs = [];
-  //List mvs_inputs = new List<bool>();
+  List<bool> servicesSelected = [];
+  bool temp = false;
+
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -36,12 +35,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       print("Selected Index: " + _controller.index.toString());
     });
     setState(() {
-      for (int i = 0; i < svs_items.length; i++) {
-        svs_inputs.add(false);
-      };
-      for (int j = 0; j < mvs_items.length; j++) {
-        mvs_inputs.add(false);
-      };
+      for (int i = 0; i < BEServices.length; i++) {
+        servicesSelected.add(false);
+      }
+      ;
+      temp = false;
     });
   }
 
@@ -124,9 +122,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         },
                         child: Container(
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
+                                padding: const EdgeInsets.only(right: 8.0),
                                 child: Container(
                                   height: 40,
                                   width: isService ? 140 : 60,
@@ -163,24 +162,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      InkWell(
-                        onTap: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Container(
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 70,
-                                  width: 70,
-                                  child:
-                                      Image.asset('assets/images/menu (8).png'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
                     ],
                   ),
                 ),
@@ -188,23 +169,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: buttonBg,
-        iconSize: 30,
-        onTap: (value)=>{},
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: new Image.asset("assets/images/30-technical2.png"),
-            label: "Services",
-          ),
-        ],
-
       ),
     );
   }
@@ -491,10 +455,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     return SingleChildScrollView(
       child: SafeArea(
         child: Column(
-          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 27.0, top: 18, right: 27),
+              padding: const EdgeInsets.only(left: 27.0, top: 5, right: 27),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -506,454 +470,157 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         color: Colors.black),
                   ),
                   CircleAvatar(
+                    backgroundColor: Colors.amber,
                     child: Icon(
                       Icons.person,
+                      color: Colors.black,
                     ),
                   )
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 27.0, top: 5),
-              child: Row(
+              padding: const EdgeInsets.only(right: 150.0, top: 5),
+              child: Column(
                 children: [
                   Text(
-                    'Choose A Service',
+                    'Select Services',
                     style: TextStyle(
                         fontFamily: 'CircularStd-Bold',
-                        fontSize: 22,
+                        fontSize: 25,
                         color: Color(0xff000000)),
                   ),
+                  Container(
+                      width: 170,
+                      child: Divider(
+                        thickness: 3,
+                        color: buttonBg,
+                        height: 10,
+                      )),
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0, top: 5),
-              child: new CheckboxListTile(
-                checkColor: buttonBg,
-                activeColor: Colors.white,
-                title: Text(
-                  "Test .. test",
-                  style: TextStyle(
-                      fontFamily: 'CircularStd-Book',
-                      fontSize: 20,
-                      color: Color(0xff000000)
-                          .withOpacity(1)),
-                ),
-                subtitle: ExpandableText(
-                  'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-                  expandText: 'show more',
-                  collapseText: 'show less',
-                  maxLines: 1,
-                  linkColor: Colors.blue,
-                ),
-                value: svs_inputs[0],
-                onChanged: (bool val) {
-                  setState(() {
-                    svs_inputs[0] = val;
-                  });
-                },
-                controlAffinity:
-                ListTileControlAffinity.leading,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  top: 5.0, left: 27, right: 27, bottom: 5),
-              child: Row(
-                children: [
-                  Container(
-                    width: 300,
-                    child: TabBar(
-                      controller: _controller,
-                      indicatorWeight: 5,
-                      indicatorColor: buttonBg,
-                      tabs: [
-                        Tab(
-                          child: Text(
-                            ' Secure Site',
-                            style: TextStyle(
-                                fontFamily: 'CircularStd-Bold',
-                                fontSize: 14,
-                                color: Color(0xff000000)),
-                          ),
+            serviceCheckBox(0),
+            serviceCheckBox(1),
+            servicesSelected[3] ? Container() : serviceCheckBox(2),
+            servicesSelected[2] ? Container() : serviceCheckBox(3),
+            serviceCheckBox(4),
+            serviceCheckBox(5),
+            SizedBox(height: 30),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          SubscribeProperty(widget.currentUser, servicesSelected)),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Container(
+                  height: 50,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: buttonBg,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 10,
                         ),
-                        Tab(
-                          child: Text(
-                            'Maintanance Site',
-                            style: TextStyle(
-                                fontFamily: 'CircularStd-Bold',
-                                fontSize: 14,
-                                color: Color(0xff000000)),
-                          ),
+                        Text(
+                          'Subscribe Property',
+                          style: TextStyle(
+                              fontFamily: 'CircularStd-Medium',
+                              fontSize: 22,
+                              color: darkBg),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0, right: 18),
-              child: Container(
-                height: 500,
-                child: TabBarView(
-                  controller: _controller,
-                  children: [
-                    Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Container(
-                        height: 295,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Color(0xffFFFFFF),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 0,
-                          ),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: 130,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: AssetImage(
-                                            'assets/images/home-security-ai.png'),
-                                        fit: BoxFit.fill)),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 18.0, top: 8),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Secure Site',
-                                      style: TextStyle(
-                                          fontFamily: 'CircularStd-Bold',
-                                          fontSize: 21,
-                                          color:
-                                              Color(0xff000000).withOpacity(1)),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 5.0, left: 18),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                      'Secure your property from any corner of the world!\n \n'
-                                      'It includes video tour of site with market Information. - Rs 1 /sqft/year',
-                                      style: TextStyle(
-                                          fontFamily: 'CircularStd-Book',
-                                          fontSize: 14,
-                                          color: Colors.black),
-                                    ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 18.0, top: 14, right: 18),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Optional tasks',
-                                      style: TextStyle(
-                                          fontFamily: 'CircularStd-Bold',
-                                          fontSize: 14,
-                                          color:
-                                              Color(0xff000000).withOpacity(1)),
-                                    ),
-                                    Container(
-                                      height: 40,
-                                      width: 70,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          color: Colors.black),
-                                      child: Center(
-                                        child: Text(
-                                          "70",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Divider(height: 4),
-                              Expanded(
-                                child: ListView.builder(
-                                    //shrinkWrap: true,
-                                    //physics: NeverScrollableScrollPhysics(),
-                                    itemCount: svs_items.length,
-                                    itemBuilder:
-                                        (BuildContext ctxt, int index) {
-                                      return SizedBox(
-                                        height: 36,
-                                        child: new CheckboxListTile(
-                                          checkColor: buttonBg,
-                                          activeColor: Colors.white,
-                                          title: Text(
-                                            "${svs_items[index]}",
-                                            style: TextStyle(
-                                                fontFamily: 'CircularStd-Book',
-                                                fontSize: 14,
-                                                color: Color(0xff000000)
-                                                    .withOpacity(1)),
-                                          ),
-
-                                          value: svs_inputs[index],
-                                          onChanged: (bool val) {
-                                            setState(() {
-                                              svs_inputs[index] = val;
-                                            });
-                                          },
-                                          controlAffinity:
-                                              ListTileControlAffinity.leading,
-
-                                          //  <-- leading Checkbox
-                                        ),
-                                      );
-                                    }),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        //builder: (context) => AddDetail()),
-                                        builder: (context) => SubscribeProperty()),
-                                  );
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 10.0),
-                                  child: Container(
-                                    height: 40,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: buttonBg,
-                                      borderRadius: BorderRadius.only(
-                                          bottomRight: Radius.circular(15),
-                                          bottomLeft: Radius.circular(15)),
-                                    ),
-                                    child: Center(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            'Subscribe',
-                                            style: TextStyle(
-                                                fontFamily:
-                                                    'CircularStd-Medium',
-                                                fontSize: 22,
-                                                color: darkBg),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Container(
-                        height: 295,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Color(0xffFFFFFF),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 0,
-                          ),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: 130,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: AssetImage(
-                                            'assets/images/home-security-ai.png'),
-                                        fit: BoxFit.fill)),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 18.0, top: 8),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Maintanance Site',
-                                      style: TextStyle(
-                                          fontFamily: 'CircularStd-Bold',
-                                          fontSize: 21,
-                                          color:
-                                              Color(0xff000000).withOpacity(1)),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 5.0, left: 18),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'It is a long established fact that a reader will be\ndistracted by the readable content of a page\nwhen looking at its layout.',
-                                      style: TextStyle(
-                                          fontFamily: 'CircularStd-Book',
-                                          fontSize: 14,
-                                          color: Color(0xffA2A2A2)),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 18.0, top: 14, right: 18),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Package Cost',
-                                      style: TextStyle(
-                                          fontFamily: 'CircularStd-Bold',
-                                          fontSize: 14,
-                                          color:
-                                              Color(0xff000000).withOpacity(1)),
-                                    ),
-                                    Container(
-                                      height: 40,
-                                      width: 70,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          color: Colors.black),
-                                      child: Center(
-                                        child: Text(
-                                          "70",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Divider(height: 4),
-                              Expanded(
-                                child: ListView.builder(
-                                    itemCount: svs_items.length,
-                                    itemBuilder:
-                                        (BuildContext ctxt, int index) {
-                                      return SizedBox(
-                                        height: 36,
-                                        child: new CheckboxListTile(
-                                          checkColor: buttonBg,
-                                          activeColor: Colors.white,
-                                          title: Text(
-                                            "${svs_items[index]}",
-                                            style: TextStyle(
-                                                fontFamily: 'CircularStd-Book',
-                                                fontSize: 14,
-                                                color: Color(0xff000000)
-                                                    .withOpacity(1)),
-                                          ),
-
-                                          value: svs_inputs[index],
-                                          onChanged: (bool val) {
-                                            setState(() {
-                                              svs_inputs[index] = val;
-                                            });
-                                          },
-                                          controlAffinity:
-                                              ListTileControlAffinity.leading,
-
-                                          //  <-- leading Checkbox
-                                        ),
-                                      );
-                                    }),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        //builder: (context) => AddDetail()),
-                                        builder: (context) => UserDashboard()),
-                                  );
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 10.0),
-                                  child: Container(
-                                    height: 55,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: buttonBg,
-                                      borderRadius: BorderRadius.only(
-                                          bottomRight: Radius.circular(15),
-                                          bottomLeft: Radius.circular(15)),
-                                    ),
-                                    child: Center(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            'Subscribe',
-                                            style: TextStyle(
-                                                fontFamily:
-                                                    'CircularStd-Medium',
-                                                fontSize: 22,
-                                                color: darkBg),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ),
+            SizedBox(height: 50),
           ],
+        ),
+      ),
+    );
+  }
+
+  Padding serviceCheckBox(int index) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 0.0, top: 5, bottom: 5),
+      child: SafeArea(
+        child: CheckboxListTile(
+          tileColor: Colors.white10,
+          checkColor: buttonBg,
+          activeColor: Colors.black54,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  BEServices[index],
+                  style: TextStyle(
+                      fontFamily: 'CircularStd-Book',
+                      fontSize: 20,
+                      color: Color(0xff000000).withOpacity(1)),
+                ),
+              ),
+              Container(
+                height: 40,
+                width: 110,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: buttonBg,
+                ),
+                child: Center(
+                  child: Text(
+                    BEServicesCharges[index],
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              )
+              /*
+              Text(
+                BEServicesCharges[index],
+                style: TextStyle(
+                    fontFamily: 'CircularStd-Book',
+                    fontSize: 20,
+                    color: Colors.black.withOpacity(1)),
+              ),
+
+               */
+            ],
+          ),
+          subtitle: ExpandableText(
+            BEServicesInfo[index],
+            collapseText: 'less',
+            expandText: 'more',
+            maxLines: 2,
+            linkColor: Colors.blue,
+            style: TextStyle(
+                fontFamily: 'CircularStd-Book',
+                fontSize: 15,
+                color: Color(0xff000000).withOpacity(1)),
+          ),
+          value: servicesSelected[index],
+          onChanged: (bool val) {
+            print('Siva....before ' + servicesSelected[index].toString());
+            setState(() {
+              servicesSelected[index] = val;
+            });
+            print('Siva....after ' + servicesSelected[index].toString());
+          },
+          controlAffinity: ListTileControlAffinity.leading,
         ),
       ),
     );

@@ -1,4 +1,4 @@
-import 'package:budeng/be_services.dart';
+import 'package:budeng/home.dart';
 import 'package:flutter/material.dart';
 import 'package:budeng/login_page.dart';
 import 'package:budeng/sign_in.dart';
@@ -11,7 +11,7 @@ class UserDashboard extends StatelessWidget {
         new IconButton(
           icon: new Icon(Icons.work),
           onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute<void>(builder: (_) => BEServices()),
+            MaterialPageRoute<void>(builder: (_) => UserDashboard()),
           ),
         ),
       ],
