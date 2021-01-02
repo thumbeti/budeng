@@ -12,7 +12,12 @@ List mvs_items = [
   "Rent / Lease Out (Assistance)",
 ];
 
-int clnn = 0;
+int vigilance = 0;
+int cleaning = 1;
+int fencing = 2;
+int compound = 3;
+int ec_khatha = 4;
+int rent = 5;
 
 List BEServices = ['Vigilance of Plot',
                   'Cleaning Plot',
@@ -21,12 +26,14 @@ List BEServices = ['Vigilance of Plot',
                   'EC / Khatha',
                   'Rent'];
 
-List BEServicesCharges = ['\u{20B9} 1.25/sqft',
+List BEServicesChargesStr = ['\u{20B9} 1.25/sqft',
   '\u{20B9} 1.85/sqft',
   '\u{20B9} 26.25/sqft',
   '\u{20B9} 120.45/sqft',
   '\u{20B9} 1/sqft',
   '\u{20B9} 1/sqft'];
+
+List BEServicesCharges = [1.25, 1.85, 26.25, 120.45, 1, 1];
 
 List BEServicesInfo = ['a) Rs 1.25 /per sqft (including GST)\n' +
               'b) Monthly video tour of plot with market Information\n' +

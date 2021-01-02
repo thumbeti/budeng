@@ -5,7 +5,7 @@ import 'package:budeng/user_dashboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:budeng/home2.dart';
+import 'package:budeng/home.dart';
 
 class UserRegistration extends StatefulWidget {
   final User currentUser;
@@ -159,12 +159,6 @@ class _UserRegistrationState extends State<UserRegistration> {
                                           height: 60,
                                           width: 250,
                                           child: TextFormField(
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return 'Please enter Name';
-                                              }
-                                              return null;
-                                            },
                                             onChanged: (String userName) {
                                               getUserName(userName);
                                             },
@@ -235,7 +229,7 @@ class _UserRegistrationState extends State<UserRegistration> {
                                           child: TextFormField(
                                             validator: (value) {
                                               if (value.isEmpty) {
-                                                return 'Please enter Phone number';
+                                                return 'Please enter phone number';
                                               }
                                               return null;
                                             },
@@ -416,7 +410,7 @@ class _UserRegistrationState extends State<UserRegistration> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Home2(widget.currentUser)),
+                              builder: (context) => Home(widget.currentUser)),
                         );
                       }
                     },

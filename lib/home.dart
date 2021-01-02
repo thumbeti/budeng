@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:budeng/constants/service_tasks.dart';
 import 'package:budeng/subscribe_property.dart';
 import 'package:expandable_text/expandable_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Home extends StatefulWidget {
   final User currentUser;
@@ -22,8 +23,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   List<bool> servicesSelected = [];
   bool temp = false;
 
+  Stream<QuerySnapshot> itemStream;
+
   void initState() {
     // TODO: implement initState
+    itemStream = FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.currentUser.email)
+        .collection('subcriptions')
+        .snapshots();
     super.initState();
     // Create TabController for getting the index of current tab
     _controller = TabController(length: 2, vsync: this);
@@ -41,6 +49,25 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       ;
       temp = false;
     });
+  }
+
+  Widget _buildList(
+      BuildContext context, DocumentSnapshot document, int index) {
+    return Center(
+      child: Container(
+        width: MediaQuery.of(context).size.width / 1.2,
+        height: MediaQuery.of(context).size.height / 6,
+        child: Expanded(
+          child: Column(
+            children: [
+              Text('Address: ' + document['propertyAddress']),
+              Text('Address: ' + document['propertyAddress']),
+              Text('Address: ' + document['propertyAddress']),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -204,7 +231,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               child: Row(
                 children: [
                   Text(
-                    'Find all\nyour Properties',
+                    'All your Properties',
                     style: TextStyle(
                         fontFamily: 'CircularStd-Bold',
                         fontSize: 32,
@@ -215,237 +242,129 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ),
             Container(
               height: 550,
-              child: ListView.builder(
-                  itemCount: 8,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding:
-                          const EdgeInsets.only(top: 27, left: 27, right: 27),
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Container(
-                          height: 295,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Color(0xffFFFFFF),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 18.0, top: 0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Luxury Duplex House',
-                                      style: TextStyle(
-                                          fontFamily: 'CircularStd-Bold',
-                                          fontSize: 21,
-                                          color:
-                                              Color(0xff000000).withOpacity(1)),
-                                    ),
-                                    Container(
-                                      height: 50,
-                                      width: 50,
-                                      decoration: BoxDecoration(
-                                        color: buttonBg,
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          '01',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 22),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5.0),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'Woodroad, Manchester, IG4',
-                                        style: TextStyle(
-                                            fontFamily: 'CircularStd-Book',
-                                            fontSize: 14,
-                                            color: Color(0xffA2A2A2)),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 10.0, bottom: 10),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'Maintanence Started on',
-                                        style: TextStyle(
-                                            fontFamily: 'CircularStd-Medium',
-                                            fontSize: 14,
-                                            color: Color(0xff000000)
-                                                .withOpacity(1)),
-                                      ),
-                                      Text(
-                                        '  10-06-2020',
-                                        style: TextStyle(
-                                            fontFamily: 'CircularStd-Medium',
-                                            fontSize: 14,
-                                            color: buttonBg),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    Container(
-                                      height: 80,
-                                      width: 150,
-                                      child: Image.asset(
-                                          'assets/images/pexels-photo-971001.png'),
-                                    ),
-                                    Container(
-                                      height: 80,
-                                      width: 150,
-                                      child: Image.asset(
-                                          'assets/images/pexels-photo-271624.png'),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 8.0, top: 10),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        child: Image.asset(
-                                            'assets/images/pexels-photo-271639.png'),
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        child: Image.asset(
-                                            'assets/images/pexels-photo-271618.png'),
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        child: Image.asset(
-                                            'assets/images/pexels-photo-1743555.png'),
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        child: Image.asset(
-                                            'assets/images/pexels-photo-4119832.png'),
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        color: Color(0xffB7B7B7)
-                                            .withOpacity(0.20000000298023224),
-                                        child: Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                '+6',
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text(
-                                                'photos',
-                                                style: TextStyle(
-                                                    fontSize: 10,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 14.0, right: 18),
-                                  child: Container(
-                                    height: 30,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xffF8F9FB).withOpacity(1),
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    child: Center(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Image.asset(
-                                              'assets/images/Ellipse 2@1X.png'),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            'Maintanence till ',
-                                            style: TextStyle(
-                                              fontFamily: 'CircularStd-Medium',
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          Text(
-                                            '01-01-2021',
-                                            style: TextStyle(
-                                                fontFamily:
-                                                    'CircularStd-Medium',
-                                                fontSize: 16,
-                                                color: buttonBg),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Image.asset(
-                                              'assets/images/Ellipse 2@1X.png'),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+              child: StreamBuilder(
+                stream: itemStream,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return ListView.builder(
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (context, index) {
+                        return listTileBuilder(
+                            context, snapshot.data.documents[index], index);
+                      },
+                      shrinkWrap: true);
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget listTileBuilder(
+      BuildContext context, DocumentSnapshot document, int index) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 27, left: 27, right: 27),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Color(0xffFFFFFF),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 18.0, top: 0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        'Address:      ',
+                        style: TextStyle(
+                            fontFamily: 'CircularStd-Bold',
+                            fontSize: 15,
+                            color: Color(0xff000000).withOpacity(1)),
+                      ),
+                    ),
+                    Flexible(
+                      child: Text(
+                        document['propertyAddress'],
+                        style: TextStyle(
+                            fontFamily: 'CircularStd-Bold',
+                            fontSize: 21,
+                            color: Color(0xff000000).withOpacity(1)),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Maintanence Started on: ',
+                        style: TextStyle(
+                            fontFamily: 'CircularStd-Bold',
+                            fontSize: 15,
+                            color: Color(0xff000000).withOpacity(1)),
+                      ),
+                      Text(
+                        '  10-06-2020',
+                        style: TextStyle(
+                            fontFamily: 'CircularStd-Medium',
+                            fontSize: 20,
+                            color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Maintanence till:',
+                        style: TextStyle(
+                            fontFamily: 'CircularStd-Bold',
+                            fontSize: 15,
+                            color: Color(0xff000000).withOpacity(1)),
+                      ),
+                      Text(
+                        document['noYears'].toString() + ' years.',
+                        style: TextStyle(
+                            fontFamily: 'CircularStd-Medium',
+                            fontSize: 20,
+                            color: Colors.black),
+                      ),
+                      Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          color: buttonBg,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Center(
+                          child: Text(
+                            (index + 1).toString(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 22),
                           ),
                         ),
                       ),
-                    );
-                  },
-                  shrinkWrap: true),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -512,8 +431,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          SubscribeProperty(widget.currentUser, servicesSelected)),
+                      builder: (context) => SubscribeProperty(
+                          widget.currentUser, servicesSelected)),
                 );
               },
               child: Padding(
@@ -581,7 +500,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 ),
                 child: Center(
                   child: Text(
-                    BEServicesCharges[index],
+                    BEServicesChargesStr[index],
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -614,11 +533,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           ),
           value: servicesSelected[index],
           onChanged: (bool val) {
-            print('Siva....before ' + servicesSelected[index].toString());
             setState(() {
               servicesSelected[index] = val;
             });
-            print('Siva....after ' + servicesSelected[index].toString());
           },
           controlAffinity: ListTileControlAffinity.leading,
         ),

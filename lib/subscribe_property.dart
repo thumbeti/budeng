@@ -5,6 +5,9 @@ import 'package:budeng/user_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:budeng/constants/service_tasks.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:toast/toast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SubscribeProperty extends StatefulWidget {
   final User currentUser;
@@ -15,6 +18,111 @@ class SubscribeProperty extends StatefulWidget {
 }
 
 class _SubscribePropertyState extends State<SubscribeProperty> {
+  Razorpay razorpay;
+  double totalPrice;
+  var items = ['Bangalore', 'Chennai', 'Hyderabad'];
+
+  @override
+  void initState() {
+    super.initState();
+
+    razorpay = new Razorpay();
+
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlerPaymentSuccess);
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlerPaymentFailure);
+    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handlerExternalWallet);
+
+    totalPrice = 0.0;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    razorpay.clear();
+  }
+
+  void openCheckout() {
+
+    addSubscriptionDetails();
+
+    /*
+    var options = {
+      "key": "rzp_test_iN0mm4sTh9A0YI",
+      "amount": totalPrice * 100,
+      "name": "BE App",
+      "description": "Payment for the subscribed services",
+      "prefill": {"contact": "2323232323", "email": widget.currentUser.email},
+      "external": {
+        "wallets": ["paytm"]
+      }
+    };
+
+    try {
+      razorpay.open(options);
+    } catch (e) {
+      print(e.toString());
+      debugPrint(e);
+    }
+     */
+  }
+
+  void handlerPaymentSuccess() {
+    print("Payment success");
+    Toast.show("Payment success", context);
+  }
+
+  void handlerPaymentFailure() {
+    print("Payment error");
+    Toast.show("Payment error", context);
+  }
+
+  void handlerExternalWallet() {
+    print("External Wallet");
+    Toast.show("External Wallet", context);
+  }
+
+  String propertyAddress, city, country;
+  int area, years;
+
+  getProperyAddress(propertyAddress) {
+    this.propertyAddress = propertyAddress;
+  }
+
+  getCity(city) {
+    this.city = city;
+  }
+
+  getCountry(country) {
+    this.country = country;
+  }
+
+  getArea(area) {
+    this.area = area;
+  }
+
+  getYears(years) {
+    this.years = years;
+  }
+
+  addSubscriptionDetails() {
+    DocumentReference ds = FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.currentUser.email);
+
+    Map<String, dynamic> subscription = {
+      'propertyAddress': propertyAddress,
+      'City': city,
+      'Area': area,
+      'noYears': years,
+      'PropertyType': 'Regular',
+    };
+
+    ds.collection('subcriptions').add(subscription).whenComplete(() {
+      Text("Subscription Added");
+      print("Subcription added..!");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,26 +259,85 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                                 style: TextStyle(
                                     fontFamily: 'CircularStd-Book',
                                     fontSize: 16,
-                                    color: Color(0xffA2A2A2)),
-                                keyboardType: TextInputType.multiline,
+                                    color: Color(0xffA2A2A2),
+                                ),
+                                keyboardType: TextInputType.streetAddress,
                                 decoration: new InputDecoration(
-                                  hintText: 'Enter Address',
+                                  hintText: 'Enter Property Address',
                                   hintStyle: TextStyle(
                                       fontFamily: 'CircularStd-Book',
                                       fontSize: 16,
-                                      color: Color(0xffA2A2A2)),
+                                      color: Color(0xffA2A2A2),
+                                  ),
                                   border: InputBorder.none,
                                   focusedBorder: InputBorder.none,
                                   enabledBorder: InputBorder.none,
                                   errorBorder: InputBorder.none,
                                   disabledBorder: InputBorder.none,
                                 ),
+                                onChanged: (String propertyAddress) {
+                                  getProperyAddress(propertyAddress);
+                                },
                               ),
                             ),
                           ),
                         ],
                       ),
                     ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 27.0, right: 27, top: 15),
+              child: Row(
+                children: [
+                  Column(
+                    children: [
+                      Text(
+                        'City',
+                        style: TextStyle(
+                            fontFamily: 'CircularStd-Bold',
+                            fontSize: 17,
+                            color: Color(0xff000000)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 27.0, right: 27, top: 5),
+              child: Container(
+                height: 60,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Color(0xffF1F1F1).withOpacity(1),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0, right: 8, top: 2),
+                  child: Container(
+                    height: 60,
+                    width: 250,
+                    child: DropdownButton<String>(
+                      value: city,
+                      icon: Icon(Icons.arrow_downward, size:24),
+                      elevation: 16,
+                      style: TextStyle(color: Colors.black, fontSize: 18),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          getCity(newValue);
+                        });
+                      },
+                      items: items
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
               ),
@@ -212,13 +379,18 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                           height: 60,
                           width: 250,
                           child: TextField(
+                            onChanged: (String sqft) {
+                              print('Area.. ' + sqft);
+                              getArea(num.tryParse(sqft));
+                              updateTotalPrice();
+                            },
                             style: TextStyle(
                                 fontFamily: 'CircularStd-Book',
                                 fontSize: 16,
                                 color: Color(0xffA2A2A2)),
-                            keyboardType: TextInputType.multiline,
+                            keyboardType: TextInputType.number,
                             decoration: new InputDecoration(
-                              hintText: 'Enter Address',
+                              hintText: 'Enter Area size',
                               hintStyle: TextStyle(
                                   fontFamily: 'CircularStd-Book',
                                   fontSize: 16,
@@ -232,11 +404,6 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                           ),
                         ),
                       ),
-                      /*Column(
-                                children: [
-                                  Container(height: 30,child: Divider(height: 30,thickness: 23,))
-                                ],
-                              )*/
                       Row(
                         children: [
                           Container(
@@ -268,19 +435,12 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                   Column(
                     children: [
                       Text(
-                        'End Date',
+                        'Number of Years to Subscribe',
                         style: TextStyle(
                             fontFamily: 'CircularStd-Bold',
                             fontSize: 17,
                             color: Color(0xff000000)),
                       ),
-                      Container(
-                          width: 90,
-                          child: Divider(
-                            thickness: 4,
-                            color: buttonBg,
-                            height: 10,
-                          )),
                     ],
                   ),
                 ],
@@ -305,13 +465,17 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                           height: 60,
                           width: 250,
                           child: TextField(
+                            onChanged: (var years) {
+                              getYears(int.parse(years));
+                              updateTotalPrice();
+                            },
                             style: TextStyle(
                                 fontFamily: 'CircularStd-Book',
                                 fontSize: 16,
                                 color: Color(0xffA2A2A2)),
-                            keyboardType: TextInputType.multiline,
+                            keyboardType: TextInputType.number,
                             decoration: new InputDecoration(
-                              hintText: 'Enter Date',
+                              hintText: 'Number of Years',
                               hintStyle: TextStyle(
                                   fontFamily: 'CircularStd-Book',
                                   fontSize: 16,
@@ -325,11 +489,6 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                           ),
                         ),
                       ),
-                      /*Column(
-                                children: [
-                                  Container(height: 30,child: Divider(height: 30,thickness: 23,))
-                                ],
-                              )*/
                       Container(
                           height: 40,
                           width: 40,
@@ -359,7 +518,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                             color: Color(0xffFFFFFF)),
                       ),
                       Text(
-                        '70',
+                        totalPrice.toString(),
                         style: TextStyle(
                             fontFamily: 'CircularStd-Bold',
                             fontSize: 27,
@@ -372,11 +531,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
             ),
             InkWell(
               onTap: () {
-                Navigator.push(
-                  context,
-                  //MaterialPageRoute(builder: (context) => Booked()),
-                  MaterialPageRoute(builder: (context) => UserDashboard()),
-                );
+                openCheckout();
               },
               child: Padding(
                 padding:
@@ -414,7 +569,26 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
     );
   }
 
+  void updateTotalPrice() {
+    double t_total = 0;
+
+    t_total = t_total + ((widget.servicesSelected[vigilance])? (BEServicesCharges[vigilance] * area * years) : 0);
+    t_total = t_total + ((widget.servicesSelected[cleaning])? (BEServicesCharges[cleaning] * area) : 0);
+    t_total = t_total + ((widget.servicesSelected[fencing])? (BEServicesCharges[fencing] * area) : 0);
+    t_total = t_total + ((widget.servicesSelected[compound])? (BEServicesCharges[compound] * area) : 0);
+    t_total = t_total + ((widget.servicesSelected[ec_khatha])? (BEServicesCharges[ec_khatha] * area) : 0);
+    t_total = t_total + ((widget.servicesSelected[rent])? (BEServicesCharges[rent] * area) : 0);
+
+    print('Total price .. ' + t_total.toString());
+    setState(() {
+      totalPrice = t_total.toDouble();
+    });
+    print('Total price .... ' + totalPrice.toString());
+    return;
+  }
+
   Padding selectedService(int index) {
+    print('select services test..');
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: Row(
