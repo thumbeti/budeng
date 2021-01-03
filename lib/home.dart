@@ -1,16 +1,21 @@
 import 'package:budeng/constants/colors.dart';
-import 'package:budeng/user_dashboard.dart';
+import 'package:budeng/login_page.dart';
+import 'package:budeng/sign_in.dart';
+import 'package:budeng/user_registration.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:budeng/constants/service_tasks.dart';
 import 'package:budeng/subscribe_property.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:focused_menu/modals.dart';
 import 'package:intl/intl.dart';
+import 'package:focused_menu/focused_menu.dart';
 
 class Home extends StatefulWidget {
   final User currentUser;
-  const Home(this.currentUser);
+  final String phoneNum;
+  const Home(this.currentUser, this.phoneNum);
   @override
   _HomeState createState() => _HomeState();
 }
@@ -31,7 +36,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     itemStream = FirebaseFirestore.instance
         .collection('users')
         .doc(widget.currentUser.email)
-        .collection('subcriptions')
+        .collection('subscriptions')
         .snapshots();
     super.initState();
     // Create TabController for getting the index of current tab
@@ -238,6 +243,23 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.data.documents.length == 0) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 50,),
+                          Text(
+                              'Please subscribe services for your properties..!!',
+                              style: TextStyle(
+                                  fontFamily: 'CircularStd-Bold',
+                                  fontSize: 25,
+                                  color: Color(0xff000000))),
+                          Container(),
+                        ],
+                      ),
+                    );
                   }
                   return ListView.builder(
                       itemCount: snapshot.data.documents.length,
@@ -312,16 +334,18 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                             fontSize: 18,
                             color: Color(0xff000000).withOpacity(1)),
                       ),
-                  Flexible(
-                    child: Text(
-                      DateFormat('dd-MM-yyyy').format(DateTime.fromMillisecondsSinceEpoch(
-                          document['subscriptionDate'].millisecondsSinceEpoch)),
-                        style: TextStyle(
-                            fontFamily: 'CircularStd-Medium',
-                            fontSize: 20,
-                            color: Colors.black),
+                      Flexible(
+                        child: Text(
+                          DateFormat('dd-MM-yyyy').format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                  document['subscriptionDate']
+                                      .millisecondsSinceEpoch)),
+                          style: TextStyle(
+                              fontFamily: 'CircularStd-Medium',
+                              fontSize: 20,
+                              color: Colors.black),
+                        ),
                       ),
-                  ),
                     ],
                   ),
                 ),
@@ -358,6 +382,29 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                 fontWeight: FontWeight.bold, fontSize: 22),
                           ),
                         ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Subscribed services:  ',
+                        style: TextStyle(
+                            fontFamily: 'CircularStd-Bold',
+                            fontSize: 18,
+                            color: Color(0xff000000).withOpacity(1)),
+                      ),
+                      Flexible(child: Text(
+                        document['services'].toString(),
+                        style: TextStyle(
+                            fontFamily: 'CircularStd-Medium',
+                            fontSize: 20,
+                            color: Colors.black),
+                      ),
                       ),
                     ],
                   ),
@@ -422,7 +469,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     context,
                     MaterialPageRoute(
                         builder: (context) => SubscribeProperty(
-                            widget.currentUser, servicesSelected)),
+                            widget.currentUser, widget.phoneNum, servicesSelected)),
                   );
                 } else {
                   showDialog(
@@ -525,24 +572,47 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ),
           ),
           Container(
-              child: Row(
-            children: [
-              Text(
-                widget.currentUser.displayName,
-                style: TextStyle(
-                    fontFamily: 'CircularStd-Book',
-                    fontSize: 20,
-                    color: darkBg),
-              ),
-              CircleAvatar(
-                backgroundColor: Colors.amber,
-                child: Icon(
-                  Icons.person,
-                  color: Colors.black,
+            child: FocusedMenuHolder(
+              menuWidth: MediaQuery.of(context).size.width*0.50,
+              blurSize: 5.0,
+              menuItemExtent: 45,
+              menuBoxDecoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(15.0))),
+              duration: Duration(milliseconds: 100),
+              animateMenuItems: true,
+              blurBackgroundColor: Colors.black54,
+              bottomOffsetHeight: 100,
+              openWithTap: true,
+              menuItems: <FocusedMenuItem>[
+                FocusedMenuItem(title: Text("Logout"),trailingIcon: Icon(Icons.logout) ,onPressed: (){
+                  signOutGoogle();
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
+                }),
+                FocusedMenuItem(title: Text("Edit user info"),trailingIcon: Icon(Icons.edit) ,onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder:
+                      (context)=>UserRegistration(widget.currentUser, widget.phoneNum)));
+                }),
+              ],
+              onPressed: (){},
+            child: Row(
+              children: [
+                Text(
+                  widget.currentUser.displayName,
+                  style: TextStyle(
+                      fontFamily: 'CircularStd-Book',
+                      fontSize: 20,
+                      color: darkBg),
                 ),
-              )
-            ],
-          )),
+                CircleAvatar(
+                  backgroundColor: Colors.amber,
+                  child: Icon(
+                    Icons.person,
+                    color: Colors.black,
+                  ),
+                )
+              ],
+            ),
+            ),
+          ),
         ],
       ),
     );

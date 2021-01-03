@@ -1,20 +1,25 @@
 import 'package:budeng/constants/colors.dart';
 import 'package:budeng/home.dart';
-import 'package:budeng/user_dashboard.dart';
-//import 'package:be_app/ui/booking.dart';
-//import 'package:be_app/ui/searchResult.dart';
+import 'package:budeng/sign_in.dart';
+import 'package:budeng/user_registration.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:budeng/constants/service_tasks.dart';
+import 'package:focused_menu/focused_menu.dart';
+import 'package:focused_menu/modals.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:toast/toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
+import 'login_page.dart';
+
 class SubscribeProperty extends StatefulWidget {
   final User currentUser;
+  final String phoneNum;
   final List<bool> servicesSelected;
-  const SubscribeProperty(this.currentUser, this.servicesSelected);
+  const SubscribeProperty(
+      this.currentUser, this.phoneNum, this.servicesSelected);
   @override
   _SubscribePropertyState createState() => _SubscribePropertyState();
 }
@@ -23,7 +28,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
   Razorpay razorpay;
   double totalPrice;
   var items = ['Bangalore', 'Chennai', 'Hyderabad'];
-  var yearsItems = [1,2,3,4,5,6,7,8,9,10];
+  var yearsItems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   @override
   void initState() {
@@ -47,13 +52,15 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
   }
 
   void openCheckout() {
-
     var options = {
       "key": "rzp_test_iN0mm4sTh9A0YI",
       "amount": totalPrice * 100,
       "name": "BE App",
       "description": "Payment for the subscribed services",
-      "prefill": {"contact": "2323232323", "email": widget.currentUser.email},
+      "prefill": {
+        "contact": widget.phoneNum,
+        "email": widget.currentUser.email
+      },
       "external": {
         "wallets": ["paytm"]
       }
@@ -72,13 +79,16 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
     print("Payment success");
     Toast.show("Payment success, paymentId: " + response.paymentId, context);
     Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => Home(widget.currentUser)),
+      MaterialPageRoute<void>(
+          builder: (_) => Home(widget.currentUser, widget.phoneNum)),
     );
   }
 
   void handlerPaymentFailure(PaymentFailureResponse response) {
     print("Payment error");
-    Toast.show("Payment error." + response.code.toString() + " - " + response.message, context);
+    Toast.show(
+        "Payment error." + response.code.toString() + " - " + response.message,
+        context);
   }
 
   void handlerExternalWallet(ExternalWalletResponse response) {
@@ -124,9 +134,17 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
       'paymentId': response.paymentId,
       'orderId': response.orderId,
       'signature': response.signature,
+      'services' : [
+        widget.servicesSelected[vigilance]? "Vigilance" : "",
+        widget.servicesSelected[cleaning]? "Cleaning" : "",
+        widget.servicesSelected[fencing]? "Fencing" : "",
+        widget.servicesSelected[compound]? "Compound wall" : "",
+        widget.servicesSelected[ec_khatha]? "EC / Khatha" : "",
+        widget.servicesSelected[rent]? "Rent" : "",
+      ],
     };
 
-    ds.collection('subcriptions').add(subscription).whenComplete(() {
+    ds.collection('subscriptions').add(subscription).whenComplete(() {
       Text("Subscription Added");
       print("Subcription added..!");
     });
@@ -147,24 +165,62 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                   Padding(
                     padding:
                         const EdgeInsets.only(left: 27.0, top: 10, right: 27),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          widget.currentUser.displayName,
-                          style: TextStyle(
-                              fontFamily: 'CircularStd-Book',
-                              fontSize: 20,
-                              color: Colors.black),
-                        ),
-                        CircleAvatar(
-                          backgroundColor: Colors.amber,
-                          child: Icon(
-                            Icons.person,
-                            color: Colors.black,
-                          ),
-                        )
+                    child: FocusedMenuHolder(
+                      menuWidth: MediaQuery.of(context).size.width * 0.50,
+                      blurSize: 5.0,
+                      menuItemExtent: 45,
+                      menuBoxDecoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(15.0))),
+                      duration: Duration(milliseconds: 100),
+                      animateMenuItems: true,
+                      blurBackgroundColor: Colors.black54,
+                      bottomOffsetHeight: 100,
+                      openWithTap: true,
+                      menuItems: <FocusedMenuItem>[
+                        FocusedMenuItem(
+                            title: Text("Logout"),
+                            trailingIcon: Icon(Icons.logout),
+                            onPressed: () {
+                              signOutGoogle();
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginPage()));
+                            }),
+                        FocusedMenuItem(
+                            title: Text("Edit user info"),
+                            trailingIcon: Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => UserRegistration(
+                                          widget.currentUser,
+                                          widget.phoneNum)));
+                            }),
                       ],
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            widget.currentUser.displayName,
+                            style: TextStyle(
+                                fontFamily: 'CircularStd-Book',
+                                fontSize: 20,
+                                color: Colors.black),
+                          ),
+                          CircleAvatar(
+                            backgroundColor: Colors.amber,
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.black,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
@@ -204,6 +260,9 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                       children: [
                         Column(
                           children: [
+                            SizedBox(
+                              height: 20,
+                            ),
                             Text(
                               'Provide Property Details',
                               style: TextStyle(
@@ -266,17 +325,17 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                               width: 250,
                               child: TextField(
                                 style: TextStyle(
-                                    fontFamily: 'CircularStd-Book',
-                                    fontSize: 16,
-                                    color: Colors.black,
+                                  fontFamily: 'CircularStd-Book',
+                                  fontSize: 16,
+                                  color: Colors.black,
                                 ),
                                 keyboardType: TextInputType.streetAddress,
                                 decoration: new InputDecoration(
                                   hintText: 'Enter Property Address',
                                   hintStyle: TextStyle(
-                                      fontFamily: 'CircularStd-Book',
-                                      fontSize: 16,
-                                      color: Color(0xffA2A2A2),
+                                    fontFamily: 'CircularStd-Book',
+                                    fontSize: 16,
+                                    color: Color(0xffA2A2A2),
                                   ),
                                   border: InputBorder.none,
                                   focusedBorder: InputBorder.none,
@@ -323,7 +382,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                     width: 250,
                     child: DropdownButton<String>(
                       value: city,
-                      icon: Icon(Icons.arrow_downward, size:24),
+                      icon: Icon(Icons.arrow_downward, size: 24),
                       elevation: 16,
                       style: TextStyle(color: Colors.black, fontSize: 18),
                       onChanged: (String newValue) {
@@ -331,8 +390,8 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                           getCity(newValue);
                         });
                       },
-                      items: items
-                          .map<DropdownMenuItem<String>>((String value) {
+                      items:
+                          items.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -382,7 +441,8 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                                 color: Colors.black),
                             keyboardType: TextInputType.number,
                             inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
                             ],
                             decoration: new InputDecoration(
                               hintText: 'Enter Area size',
@@ -423,54 +483,60 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 27.0, right: 27, top: 15),
-              child: Row(
-                children: [
-                  Column(
-                    children: [
-                      Text(
-                        'Number of Years to Subscribe',
-                        style: TextStyle(
-                            fontFamily: 'CircularStd-Bold',
-                            fontSize: 17,
-                            color: Color(0xff000000)),
+            widget.servicesSelected[vigilance]
+                ? (Column(children: [
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 27.0, right: 27, top: 15),
+                      child: Row(
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                'Number of Years to Subscribe',
+                                style: TextStyle(
+                                    fontFamily: 'CircularStd-Bold',
+                                    fontSize: 17,
+                                    color: Color(0xff000000)),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 27.0, right: 27, top: 5),
-              child: Container(
-                alignment: AlignmentDirectional(0.0, 0.0),
-                height: 60,
-                //width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Color(0xffF1F1F1).withOpacity(1),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: DropdownButton<int>(
-                  value: years,
-                  icon: Icon(Icons.arrow_downward, size:24),
-                  elevation: 16,
-                  style: TextStyle(color: Colors.black, fontSize: 18),
-                  onChanged: (int newValue) {
-                    setState(() {
-                      getYears(newValue);
-                    });
-                  },
-                  items: yearsItems
-                      .map<DropdownMenuItem<int>>((int value) {
-                    return DropdownMenuItem<int>(
-                      value: value,
-                      child: Text(value.toString()),
-                    );
-                  }).toList(), ),
-              ),
-            ),
-
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 27.0, right: 27, top: 5),
+                      child: Container(
+                        alignment: AlignmentDirectional(0.0, 0.0),
+                        height: 60,
+                        //width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Color(0xffF1F1F1).withOpacity(1),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: DropdownButton<int>(
+                          value: years,
+                          icon: Icon(Icons.arrow_downward, size: 24),
+                          elevation: 16,
+                          style: TextStyle(color: Colors.black, fontSize: 18),
+                          onChanged: (int newValue) {
+                            setState(() {
+                              getYears(newValue);
+                            });
+                          },
+                          items: yearsItems
+                              .map<DropdownMenuItem<int>>((int value) {
+                            return DropdownMenuItem<int>(
+                              value: value,
+                              child: Text(value.toString()),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ]))
+                : Container(),
             Padding(
               padding: const EdgeInsets.only(top: 18.0, bottom: 18),
               child: Container(
@@ -483,14 +549,14 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Total Price for\nSelected Services',
+                        'Total Price',
                         style: TextStyle(
                             fontFamily: 'CircularStd-Medium',
-                            fontSize: 14,
+                            fontSize: 20,
                             color: Color(0xffFFFFFF)),
                       ),
                       Text(
-                        totalPrice.toString(),
+                        '\u{20B9} ' + totalPrice.toString(),
                         style: TextStyle(
                             fontFamily: 'CircularStd-Bold',
                             fontSize: 27,
@@ -544,12 +610,30 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
   void updateTotalPrice() {
     double t_total = 0;
 
-    t_total = t_total + ((widget.servicesSelected[vigilance])? (BEServicesCharges[vigilance] * area * years) : 0);
-    t_total = t_total + ((widget.servicesSelected[cleaning])? (BEServicesCharges[cleaning] * area) : 0);
-    t_total = t_total + ((widget.servicesSelected[fencing])? (BEServicesCharges[fencing] * area) : 0);
-    t_total = t_total + ((widget.servicesSelected[compound])? (BEServicesCharges[compound] * area) : 0);
-    t_total = t_total + ((widget.servicesSelected[ec_khatha])? (BEServicesCharges[ec_khatha] * area) : 0);
-    t_total = t_total + ((widget.servicesSelected[rent])? (BEServicesCharges[rent] * area) : 0);
+    t_total = t_total +
+        ((widget.servicesSelected[vigilance])
+            ? (BEServicesCharges[vigilance] * area * years)
+            : 0);
+    t_total = t_total +
+        ((widget.servicesSelected[cleaning])
+            ? (BEServicesCharges[cleaning] * area)
+            : 0);
+    t_total = t_total +
+        ((widget.servicesSelected[fencing])
+            ? (BEServicesCharges[fencing] * area)
+            : 0);
+    t_total = t_total +
+        ((widget.servicesSelected[compound])
+            ? (BEServicesCharges[compound] * area)
+            : 0);
+    t_total = t_total +
+        ((widget.servicesSelected[ec_khatha])
+            ? (BEServicesCharges[ec_khatha] * area)
+            : 0);
+    t_total = t_total +
+        ((widget.servicesSelected[rent])
+            ? (BEServicesCharges[rent] * area)
+            : 0);
 
     print('Total price .. ' + t_total.toString());
     setState(() {

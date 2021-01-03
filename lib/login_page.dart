@@ -6,7 +6,6 @@ import 'package:budeng/sign_in.dart';
 import 'package:budeng/admin_screen.dart';
 import 'package:budeng/constants/colors.dart';
 import 'package:budeng/user_registration.dart';
-import 'package:budeng/home2.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -18,6 +17,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   User currentUser;
   String userType;
+  String phoneNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                 print('User already registered.');
                 if (userType == 'Regular') {
                   Navigator.of(context).push(
-                    MaterialPageRoute<void>(builder: (_) => Home(currentUser)),
+                    MaterialPageRoute<void>(builder: (_) => Home(currentUser, phoneNumber)),
                   );
                 } else {
                   Navigator.of(context).push(
@@ -205,7 +205,7 @@ class _LoginPageState extends State<LoginPage> {
     print('Welcome to Budget Engineering.. going for registration.' +
         currentUser.displayName);
     Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => UserRegistration(currentUser)),
+      MaterialPageRoute<void>(builder: (_) => UserRegistration(currentUser, phoneNumber)),
     );
   }
 
@@ -224,6 +224,7 @@ class _LoginPageState extends State<LoginPage> {
         print('DB values: ');
         Map<String, dynamic> data = value.data();
         userType = data['userType'];
+        phoneNumber = data['phoneNum'];
         retval = true;
       }
     });
