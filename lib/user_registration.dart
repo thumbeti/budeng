@@ -1,7 +1,6 @@
 import 'package:budeng/sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:budeng/constants/colors.dart';
-import 'package:budeng/user_dashboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -83,22 +82,12 @@ class _UserRegistrationState extends State<UserRegistration> {
                           height: 40,
                           child: Image.asset('assets/images/Group7.png'),
                         ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              //MaterialPageRoute(builder: (context) => Search()),
-                              MaterialPageRoute(
-                                  builder: (context) => UserDashboard()),
-                            );
-                          },
-                          child: Text(
-                            'Welcome ' + name,
-                            style: TextStyle(
-                                fontFamily: 'CircularStd-Book',
-                                fontSize: 20,
-                                color: lightBg),
-                          ),
+                        Text(
+                          'Welcome ' + name,
+                          style: TextStyle(
+                              fontFamily: 'CircularStd-Book',
+                              fontSize: 20,
+                              color: lightBg),
                         ),
                       ],
                     ),

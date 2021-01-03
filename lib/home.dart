@@ -57,25 +57,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     });
   }
 
-  Widget _buildList(
-      BuildContext context, DocumentSnapshot document, int index) {
-    return Center(
-      child: Container(
-        width: MediaQuery.of(context).size.width / 1.2,
-        height: MediaQuery.of(context).size.height / 6,
-        child: Expanded(
-          child: Column(
-            children: [
-              Text('Address: ' + document['propertyAddress']),
-              Text('Address: ' + document['propertyAddress']),
-              Text('Address: ' + document['propertyAddress']),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -461,7 +442,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 : serviceCheckBox(3, false),
             serviceCheckBox(4, false),
             serviceCheckBox(5, false),
-            SizedBox(height: 30),
+            SizedBox(height: 20),
             InkWell(
               onTap: () {
                 if (isServicesSelected()) {
@@ -640,7 +621,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               ),
               Container(
                 height: 40,
-                width: 110,
+                width: 120,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                   color: buttonBg,
@@ -655,16 +636,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   ),
                 ),
               )
-              /*
-              Text(
-                BEServicesCharges[index],
-                style: TextStyle(
-                    fontFamily: 'CircularStd-Book',
-                    fontSize: 20,
-                    color: Colors.black.withOpacity(1)),
-              ),
-
-               */
             ],
           ),
           subtitle: ExpandableText(

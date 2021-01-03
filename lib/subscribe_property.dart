@@ -630,10 +630,11 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
         ((widget.servicesSelected[ec_khatha])
             ? (BEServicesCharges[ec_khatha] * area)
             : 0);
+    /*
     t_total = t_total +
         ((widget.servicesSelected[rent])
             ? (BEServicesCharges[rent] * area)
-            : 0);
+            : 0); */
 
     print('Total price .. ' + t_total.toString());
     setState(() {
