@@ -6,6 +6,7 @@ import 'package:budeng/constants/service_tasks.dart';
 import 'package:budeng/subscribe_property.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget {
   final User currentUser;
@@ -249,6 +250,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 },
               ),
             ),
+            SizedBox(height: 50),
           ],
         ),
       ),
@@ -273,7 +275,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             padding: const EdgeInsets.only(left: 18.0, top: 0),
             child: Column(
               children: [
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -302,19 +306,22 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   child: Row(
                     children: [
                       Text(
-                        'Subscription started on: ',
+                        'Subscribed on:  ',
                         style: TextStyle(
                             fontFamily: 'CircularStd-Bold',
                             fontSize: 18,
                             color: Color(0xff000000).withOpacity(1)),
                       ),
-                      Text(
-                        '  10-06-2020',
+                  Flexible(
+                    child: Text(
+                      DateFormat('dd-MM-yyyy').format(DateTime.fromMillisecondsSinceEpoch(
+                          document['subscriptionDate'].millisecondsSinceEpoch)),
                         style: TextStyle(
                             fontFamily: 'CircularStd-Medium',
                             fontSize: 20,
                             color: Colors.black),
                       ),
+                  ),
                     ],
                   ),
                 ),
@@ -363,6 +370,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     );
   }
 
+  /*
+  _ago(Timestamp t) {
+    return timeago.format(t.toDate(), 'en_short');
+  }
+   */
+
   Widget services() {
     return SingleChildScrollView(
       child: SafeArea(
@@ -393,14 +406,18 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ),
             serviceCheckBox(0, false),
             serviceCheckBox(1, false),
-            servicesSelected[3] ?  serviceCheckBox(2, true) : serviceCheckBox(2, false),
-            servicesSelected[2] ? serviceCheckBox(3, true) : serviceCheckBox(3, false),
+            servicesSelected[3]
+                ? serviceCheckBox(2, true)
+                : serviceCheckBox(2, false),
+            servicesSelected[2]
+                ? serviceCheckBox(3, true)
+                : serviceCheckBox(3, false),
             serviceCheckBox(4, false),
             serviceCheckBox(5, false),
             SizedBox(height: 30),
             InkWell(
               onTap: () {
-                if(isServicesSelected()) {
+                if (isServicesSelected()) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -411,24 +428,28 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   showDialog(
                       context: context,
                       builder: (_) => new AlertDialog(
-                        title: Text("Please select at least one service!",
-                          style: TextStyle(
-                            fontFamily: 'CircularStd-Bold',
-                            fontSize: 20,),
-                        ),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: Text('Close me!', style: TextStyle(
+                            title: Text(
+                              "Please select at least one service!",
+                              style: TextStyle(
                                 fontFamily: 'CircularStd-Bold',
                                 fontSize: 20,
-                                color: Colors.amber),
+                              ),
                             ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      ));
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text(
+                                  'Close me!',
+                                  style: TextStyle(
+                                      fontFamily: 'CircularStd-Bold',
+                                      fontSize: 20,
+                                      color: Colors.amber),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          ));
                 }
               },
               child: Padding(
@@ -468,7 +489,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   }
 
   bool isServicesSelected() {
-    if(!servicesSelected[0] &&
+    if (!servicesSelected[0] &&
         !servicesSelected[1] &&
         !servicesSelected[2] &&
         !servicesSelected[3] &&
@@ -482,52 +503,49 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   Padding homeHeader() {
     return Padding(
-            padding: const EdgeInsets.only(left: 10.0, top: 5, right: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  height: 60,
-                  width: 98,
-                  decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                            'assets/images/Group7.png'),
-                        SizedBox(
-                          width: 10,
-                        ),
-                      ],
-                    ),
+      padding: const EdgeInsets.only(left: 10.0, top: 5, right: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            height: 60,
+            width: 98,
+            decoration: BoxDecoration(
+                color: Colors.black, borderRadius: BorderRadius.circular(10)),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Row(
+                children: [
+                  Image.asset('assets/images/Group7.png'),
+                  SizedBox(
+                    width: 10,
                   ),
-                ),
-                Container(
-                    child: Row(
-                      children: [
-                        Text(
-                          widget.currentUser.displayName,
-                          style: TextStyle(
-                              fontFamily: 'CircularStd-Book',
-                              fontSize: 20,
-                              color: darkBg),
-                        ),
-                        CircleAvatar(
-                          backgroundColor: Colors.amber,
-                          child: Icon(
-                            Icons.person,
-                            color: Colors.black,
-                          ),
-                        )
-                      ],
-                    )
-                ),
-              ],
+                ],
+              ),
             ),
-          );
+          ),
+          Container(
+              child: Row(
+            children: [
+              Text(
+                widget.currentUser.displayName,
+                style: TextStyle(
+                    fontFamily: 'CircularStd-Book',
+                    fontSize: 20,
+                    color: darkBg),
+              ),
+              CircleAvatar(
+                backgroundColor: Colors.amber,
+                child: Icon(
+                  Icons.person,
+                  color: Colors.black,
+                ),
+              )
+            ],
+          )),
+        ],
+      ),
+    );
   }
 
   Padding serviceCheckBox(int index, bool grey) {
@@ -535,7 +553,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       padding: const EdgeInsets.only(left: 0.0, top: 5, bottom: 5),
       child: SafeArea(
         child: CheckboxListTile(
-          tileColor: grey? Colors.black12 : Colors.white70,
+          tileColor: grey ? Colors.black12 : Colors.white70,
           checkColor: buttonBg,
           activeColor: Colors.black54,
           title: Row(
@@ -591,12 +609,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 color: Color(0xff000000).withOpacity(1)),
           ),
           value: servicesSelected[index],
-          onChanged: grey? null :
-           (bool val) {
-             setState(() {
-               servicesSelected[index] = val;
-             });
-           },
+          onChanged: grey
+              ? null
+              : (bool val) {
+                  setState(() {
+                    servicesSelected[index] = val;
+                  });
+                },
           controlAffinity: ListTileControlAffinity.leading,
         ),
       ),

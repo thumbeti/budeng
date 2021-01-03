@@ -1,4 +1,5 @@
 import 'package:budeng/constants/colors.dart';
+import 'package:budeng/home.dart';
 import 'package:budeng/user_dashboard.dart';
 //import 'package:be_app/ui/booking.dart';
 //import 'package:be_app/ui/searchResult.dart';
@@ -8,6 +9,7 @@ import 'package:budeng/constants/service_tasks.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:toast/toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 class SubscribeProperty extends StatefulWidget {
   final User currentUser;
@@ -21,6 +23,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
   Razorpay razorpay;
   double totalPrice;
   var items = ['Bangalore', 'Chennai', 'Hyderabad'];
+  var yearsItems = [1,2,3,4,5,6,7,8,9,10];
 
   @override
   void initState() {
@@ -33,6 +36,8 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
     razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handlerExternalWallet);
 
     totalPrice = 0.0;
+    getYears(yearsItems[0]);
+    getCity(items[0]);
   }
 
   @override
@@ -43,9 +48,6 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
 
   void openCheckout() {
 
-    addSubscriptionDetails();
-
-    /*
     var options = {
       "key": "rzp_test_iN0mm4sTh9A0YI",
       "amount": totalPrice * 100,
@@ -63,22 +65,25 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
       print(e.toString());
       debugPrint(e);
     }
-     */
   }
 
-  void handlerPaymentSuccess() {
+  void handlerPaymentSuccess(PaymentSuccessResponse response) {
+    addSubscriptionDetails(response);
     print("Payment success");
-    Toast.show("Payment success", context);
+    Toast.show("Payment success, paymentId: " + response.paymentId, context);
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => Home(widget.currentUser)),
+    );
   }
 
-  void handlerPaymentFailure() {
+  void handlerPaymentFailure(PaymentFailureResponse response) {
     print("Payment error");
-    Toast.show("Payment error", context);
+    Toast.show("Payment error." + response.code.toString() + " - " + response.message, context);
   }
 
-  void handlerExternalWallet() {
+  void handlerExternalWallet(ExternalWalletResponse response) {
     print("External Wallet");
-    Toast.show("External Wallet", context);
+    Toast.show("External Wallet: " + response.walletName, context);
   }
 
   String propertyAddress, city, country;
@@ -104,17 +109,21 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
     this.years = years;
   }
 
-  addSubscriptionDetails() {
+  addSubscriptionDetails(PaymentSuccessResponse response) {
     DocumentReference ds = FirebaseFirestore.instance
         .collection('users')
         .doc(widget.currentUser.email);
 
     Map<String, dynamic> subscription = {
+      'subscriptionDate': DateTime.now(),
       'propertyAddress': propertyAddress,
       'City': city,
       'Area': area,
       'noYears': years,
       'PropertyType': 'Regular',
+      'paymentId': response.paymentId,
+      'orderId': response.orderId,
+      'signature': response.signature,
     };
 
     ds.collection('subcriptions').add(subscription).whenComplete(() {
@@ -132,7 +141,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 27.0, top: 5, right: 27),
+              padding: const EdgeInsets.only(left: 27.0, top: 10, right: 27),
               child: Column(
                 children: [
                   Padding(
@@ -259,7 +268,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                                 style: TextStyle(
                                     fontFamily: 'CircularStd-Book',
                                     fontSize: 16,
-                                    color: Color(0xffA2A2A2),
+                                    color: Colors.black,
                                 ),
                                 keyboardType: TextInputType.streetAddress,
                                 decoration: new InputDecoration(
@@ -289,21 +298,13 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 27.0, right: 27, top: 15),
-              child: Row(
-                children: [
-                  Column(
-                    children: [
-                      Text(
-                        'City',
-                        style: TextStyle(
-                            fontFamily: 'CircularStd-Bold',
-                            fontSize: 17,
-                            color: Color(0xff000000)),
-                      ),
-                    ],
-                  ),
-                ],
+              padding: const EdgeInsets.only(right: 300, top: 15),
+              child: Text(
+                'City',
+                style: TextStyle(
+                    fontFamily: 'CircularStd-Bold',
+                    fontSize: 17,
+                    color: Color(0xff000000)),
               ),
             ),
             Padding(
@@ -343,21 +344,13 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 27.0, right: 27, top: 14),
-              child: Row(
-                children: [
-                  Column(
-                    children: [
-                      Text(
-                        'Area',
-                        style: TextStyle(
-                            fontFamily: 'CircularStd-Book',
-                            fontSize: 17,
-                            color: Color(0xff000000)),
-                      ),
-                    ],
-                  ),
-                ],
+              padding: const EdgeInsets.only(right: 300, top: 15),
+              child: Text(
+                'Area',
+                style: TextStyle(
+                    fontFamily: 'CircularStd-Bold',
+                    fontSize: 17,
+                    color: Color(0xff000000)),
               ),
             ),
             Padding(
@@ -380,15 +373,17 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                           width: 250,
                           child: TextField(
                             onChanged: (String sqft) {
-                              print('Area.. ' + sqft);
                               getArea(num.tryParse(sqft));
                               updateTotalPrice();
                             },
                             style: TextStyle(
                                 fontFamily: 'CircularStd-Book',
                                 fontSize: 16,
-                                color: Color(0xffA2A2A2)),
+                                color: Colors.black),
                             keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                            ],
                             decoration: new InputDecoration(
                               hintText: 'Enter Area size',
                               hintStyle: TextStyle(
@@ -449,56 +444,33 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
             Padding(
               padding: const EdgeInsets.only(left: 27.0, right: 27, top: 5),
               child: Container(
+                alignment: AlignmentDirectional(0.0, 0.0),
                 height: 60,
-                width: double.infinity,
+                //width: double.infinity,
                 decoration: BoxDecoration(
                   color: Color(0xffF1F1F1).withOpacity(1),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0, right: 8, top: 2),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Center(
-                        child: Container(
-                          height: 60,
-                          width: 250,
-                          child: TextField(
-                            onChanged: (var years) {
-                              getYears(int.parse(years));
-                              updateTotalPrice();
-                            },
-                            style: TextStyle(
-                                fontFamily: 'CircularStd-Book',
-                                fontSize: 16,
-                                color: Color(0xffA2A2A2)),
-                            keyboardType: TextInputType.number,
-                            decoration: new InputDecoration(
-                              hintText: 'Number of Years',
-                              hintStyle: TextStyle(
-                                  fontFamily: 'CircularStd-Book',
-                                  fontSize: 16,
-                                  color: Color(0xffA2A2A2)),
-                              border: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                          height: 40,
-                          width: 40,
-                          child:
-                              Image.asset('assets/images/calendar (10).png')),
-                    ],
-                  ),
-                ),
+                child: DropdownButton<int>(
+                  value: years,
+                  icon: Icon(Icons.arrow_downward, size:24),
+                  elevation: 16,
+                  style: TextStyle(color: Colors.black, fontSize: 18),
+                  onChanged: (int newValue) {
+                    setState(() {
+                      getYears(newValue);
+                    });
+                  },
+                  items: yearsItems
+                      .map<DropdownMenuItem<int>>((int value) {
+                    return DropdownMenuItem<int>(
+                      value: value,
+                      child: Text(value.toString()),
+                    );
+                  }).toList(), ),
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.only(top: 18.0, bottom: 18),
               child: Container(
