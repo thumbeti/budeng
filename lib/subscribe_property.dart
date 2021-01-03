@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:budeng/constants/service_tasks.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:toast/toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -75,9 +77,10 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
   }
 
   void handlerPaymentSuccess(PaymentSuccessResponse response) {
-    addSubscriptionDetails(response);
     print("Payment success");
     Toast.show("Payment success, paymentId: " + response.paymentId, context);
+    addSubscriptionDetails(response);
+    sendEmail();
     Navigator.of(context).push(
       MaterialPageRoute<void>(
           builder: (_) => Home(widget.currentUser, widget.phoneNum)),
@@ -94,6 +97,37 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
   void handlerExternalWallet(ExternalWalletResponse response) {
     print("External Wallet");
     Toast.show("External Wallet: " + response.walletName, context);
+  }
+
+  sendEmail() async {
+    String username = 'budgetengineers1980@gmail.com';
+    String password = 'Zaq1@wsx';
+
+    final smtpServer = gmail(username, password);
+    // Use the SmtpServer class to configure an SMTP server:
+    // final smtpServer = SmtpServer('smtp.domain.com');
+    // See the named arguments of SmtpServer for further configuration
+    // options.
+
+    // Create our message.
+    final message = Message()
+      ..from = Address(username, 'Budget Engineers')
+      ..recipients.add(widget.currentUser.email)
+      ..ccRecipients.addAll(['budgetengineers1980@gmail.com'])
+      ..bccRecipients.add(Address('thumbeti@gmail.com'))
+      ..subject = 'Thanks for connecting Budget Engineers :: ${DateTime.now()}'
+      ..text = 'Your property is subscribed.\nMore details.'
+      ..html = "<h1>Your property is subscribed</h1>\n<p>Your property is subscribed..</p>";
+
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Message sent: ' + sendReport.toString());
+    } on MailerException catch (e) {
+      print('Message not sent.');
+      for (var p in e.problems) {
+        print('Problem: ${p.code}: ${p.msg}');
+      }
+    }
   }
 
   String propertyAddress, city, country;
@@ -556,7 +590,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                             color: Color(0xffFFFFFF)),
                       ),
                       Text(
-                        '\u{20B9} ' + totalPrice.toString(),
+                        '\u{20B9} ' + totalPrice.toStringAsFixed(2),
                         style: TextStyle(
                             fontFamily: 'CircularStd-Bold',
                             fontSize: 27,
@@ -569,6 +603,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
             ),
             InkWell(
               onTap: () {
+                //sendEmail();
                 openCheckout();
               },
               child: Padding(
