@@ -31,6 +31,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
   double totalPrice;
   var items = ['Bangalore', 'Chennai', 'Hyderabad'];
   var yearsItems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  List<String> selectedServicesStr = [];
 
   @override
   void initState() {
@@ -45,6 +46,13 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
     totalPrice = 0.0;
     getYears(yearsItems[0]);
     getCity(items[0]);
+
+    if(widget.servicesSelected[vigilance]) selectedServicesStr.add("Vigilance");
+    if(widget.servicesSelected[cleaning]) selectedServicesStr.add("Cleaning");
+    if(widget.servicesSelected[fencing]) selectedServicesStr.add("Fencing");
+    if(widget.servicesSelected[compound]) selectedServicesStr.add("Compound wall");
+    if(widget.servicesSelected[ec_khatha]) selectedServicesStr.add("EC / Khatha");
+    if(widget.servicesSelected[rent]) selectedServicesStr.add("Rent");
   }
 
   @override
@@ -80,6 +88,9 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
     print("Payment success");
     Toast.show("Payment success, paymentId: " + response.paymentId, context);
     addSubscriptionDetails(response);
+    setState(() {
+      getPaymentId(response.paymentId);
+    });
     sendEmail();
     Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -116,8 +127,14 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
       ..ccRecipients.addAll(['budgetengineers1980@gmail.com'])
       ..bccRecipients.add(Address('thumbeti@gmail.com'))
       ..subject = 'Thanks for connecting Budget Engineers :: ${DateTime.now()}'
-      ..text = 'Your property is subscribed.\nMore details.'
-      ..html = "<h1>Your property is subscribed</h1>\n<p>Your property is subscribed..</p>";
+      ..html = "<h3>Hi ${widget.currentUser.displayName},</h3>\n"
+          "<p>Your property is subscribed."
+          "<br>   Address: ${propertyAddress},"
+          "<br>   Subscribed for: ${years} years,"
+          "<br>   Subscribed services: ${selectedServicesStr}."
+          "<br>   PaymentId: ${paymentId}"
+          "<br><br>"
+          "Thanks,<br>Budget Engineers team.</p>";
 
     try {
       final sendReport = await send(message, smtpServer);
@@ -132,6 +149,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
 
   String propertyAddress, city, country;
   int area, years;
+  String paymentId;
 
   getProperyAddress(propertyAddress) {
     this.propertyAddress = propertyAddress;
@@ -153,6 +171,10 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
     this.years = years;
   }
 
+  getPaymentId(paymentId) {
+    this.paymentId = paymentId;
+  }
+
   addSubscriptionDetails(PaymentSuccessResponse response) {
     DocumentReference ds = FirebaseFirestore.instance
         .collection('users')
@@ -168,14 +190,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
       'paymentId': response.paymentId,
       'orderId': response.orderId,
       'signature': response.signature,
-      'services' : [
-        widget.servicesSelected[vigilance]? "Vigilance" : "",
-        widget.servicesSelected[cleaning]? "Cleaning" : "",
-        widget.servicesSelected[fencing]? "Fencing" : "",
-        widget.servicesSelected[compound]? "Compound wall" : "",
-        widget.servicesSelected[ec_khatha]? "EC / Khatha" : "",
-        widget.servicesSelected[rent]? "Rent" : "",
-      ],
+      'services' : selectedServicesStr,
     };
 
     ds.collection('subscriptions').add(subscription).whenComplete(() {
