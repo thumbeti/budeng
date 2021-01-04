@@ -129,7 +129,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
       ..subject = 'Thanks for connecting Budget Engineers :: ${DateTime.now()}'
       ..html = "<h3>Hi ${widget.currentUser.displayName},</h3>\n"
           "<p>Your property is subscribed."
-          "<br>   Address: ${propertyAddress},"
+          "<br><br>   Address: ${propertyAddress},"
           "<br>   Subscribed for: ${years} years,"
           "<br>   Subscribed services: ${selectedServicesStr}."
           "<br>   PaymentId: ${paymentId}"
