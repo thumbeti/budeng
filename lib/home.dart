@@ -95,7 +95,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                 padding: const EdgeInsets.only(left: 8.0),
                                 child: Container(
                                   height: 40,
-                                  width: isHome ? 120 : 60,
+                                  width: isHome ? 120 : 120,
                                   decoration: BoxDecoration(
                                       color: isHome ? buttonBg : Colors.black,
                                       borderRadius: BorderRadius.circular(10)),
@@ -118,7 +118,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 18),
                                               )
-                                            : Text('')
+                                            : Text(
+                                          'Home',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -143,7 +149,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                 padding: const EdgeInsets.only(right: 8.0),
                                 child: Container(
                                   height: 40,
-                                  width: isService ? 140 : 60,
+                                  width: isService ? 140 : 140,
                                   decoration: BoxDecoration(
                                       color:
                                           isService ? buttonBg : Colors.black,
@@ -167,7 +173,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 18),
                                               )
-                                            : Text('')
+                                            : Text(
+                                                'Services',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18),
+                                              ),
                                       ],
                                     ),
                                   ),
@@ -230,7 +242,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(height: 50,),
+                          SizedBox(
+                            height: 50,
+                          ),
                           Text(
                               'Please subscribe services for your properties..!!',
                               style: TextStyle(
@@ -379,13 +393,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                             fontSize: 18,
                             color: Color(0xff000000).withOpacity(1)),
                       ),
-                      Flexible(child: Text(
-                        document['services'].toString(),
-                        style: TextStyle(
-                            fontFamily: 'CircularStd-Medium',
-                            fontSize: 20,
-                            color: Colors.black),
-                      ),
+                      Flexible(
+                        child: Text(
+                          document['services'].toString(),
+                          style: TextStyle(
+                              fontFamily: 'CircularStd-Medium',
+                              fontSize: 20,
+                              color: Colors.black),
+                        ),
                       ),
                     ],
                   ),
@@ -397,12 +412,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       ),
     );
   }
-
-  /*
-  _ago(Timestamp t) {
-    return timeago.format(t.toDate(), 'en_short');
-  }
-   */
 
   Widget services() {
     return SingleChildScrollView(
@@ -450,7 +459,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     context,
                     MaterialPageRoute(
                         builder: (context) => SubscribeProperty(
-                            widget.currentUser, widget.phoneNum, servicesSelected)),
+                            widget.currentUser,
+                            widget.phoneNum,
+                            servicesSelected)),
                   );
                 } else {
                   showDialog(
@@ -497,7 +508,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           width: 10,
                         ),
                         Text(
-                          'Subscribe Property',
+                          'Subscribe Service(s)',
                           style: TextStyle(
                               fontFamily: 'CircularStd-Medium',
                               fontSize: 22,
@@ -554,44 +565,56 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           ),
           Container(
             child: FocusedMenuHolder(
-              menuWidth: MediaQuery.of(context).size.width*0.50,
+              menuWidth: MediaQuery.of(context).size.width * 0.50,
               blurSize: 5.0,
               menuItemExtent: 45,
-              menuBoxDecoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(15.0))),
+              menuBoxDecoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.all(Radius.circular(15.0))),
               duration: Duration(milliseconds: 100),
               animateMenuItems: true,
               blurBackgroundColor: Colors.black54,
               bottomOffsetHeight: 100,
               openWithTap: true,
               menuItems: <FocusedMenuItem>[
-                FocusedMenuItem(title: Text("Logout"),trailingIcon: Icon(Icons.logout) ,onPressed: (){
-                  signOutGoogle();
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
-                }),
-                FocusedMenuItem(title: Text("Edit user info"),trailingIcon: Icon(Icons.edit) ,onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder:
-                      (context)=>UserRegistration(widget.currentUser, widget.phoneNum)));
-                }),
+                FocusedMenuItem(
+                    title: Text("Logout"),
+                    trailingIcon: Icon(Icons.logout),
+                    onPressed: () {
+                      signOutGoogle();
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => LoginPage()));
+                    }),
+                FocusedMenuItem(
+                    title: Text("Edit user info"),
+                    trailingIcon: Icon(Icons.edit),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserRegistration(
+                                  widget.currentUser, widget.phoneNum)));
+                    }),
               ],
-              onPressed: (){},
-            child: Row(
-              children: [
-                Text(
-                  widget.currentUser.displayName,
-                  style: TextStyle(
-                      fontFamily: 'CircularStd-Book',
-                      fontSize: 20,
-                      color: darkBg),
-                ),
-                CircleAvatar(
-                  backgroundColor: Colors.amber,
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.black,
+              onPressed: () {},
+              child: Row(
+                children: [
+                  Text(
+                    widget.currentUser.displayName,
+                    style: TextStyle(
+                        fontFamily: 'CircularStd-Book',
+                        fontSize: 20,
+                        color: darkBg),
                   ),
-                )
-              ],
-            ),
+                  CircleAvatar(
+                    backgroundColor: Colors.amber,
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.black,
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ],
@@ -601,7 +624,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   Padding serviceCheckBox(int index, bool grey) {
     return Padding(
-      padding: const EdgeInsets.only(left: 0.0, top: 5, bottom: 5),
+      padding: const EdgeInsets.only(left: 0.0, top: 0, bottom: 5),
       child: SafeArea(
         child: CheckboxListTile(
           tileColor: grey ? Colors.black12 : Colors.white70,

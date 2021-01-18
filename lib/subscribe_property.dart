@@ -375,7 +375,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                               child: TextField(
                                 style: TextStyle(
                                   fontFamily: 'CircularStd-Book',
-                                  fontSize: 16,
+                                  fontSize: 20,
                                   color: Colors.black,
                                 ),
                                 keyboardType: TextInputType.streetAddress,
@@ -383,7 +383,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                                   hintText: 'Enter Property Address',
                                   hintStyle: TextStyle(
                                     fontFamily: 'CircularStd-Book',
-                                    fontSize: 16,
+                                    fontSize: 20,
                                     color: Color(0xffA2A2A2),
                                   ),
                                   border: InputBorder.none,

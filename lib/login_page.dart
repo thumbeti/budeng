@@ -7,6 +7,7 @@ import 'package:budeng/sign_in.dart';
 import 'package:budeng/admin_screen.dart';
 import 'package:budeng/constants/colors.dart';
 import 'package:budeng/user_registration.dart';
+import 'package:toast/toast.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -43,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
                     Padding(
                       padding: const EdgeInsets.only(top: 25.0),
                       child: Container(
-                          height: 80,
+                          height: 70,
                           child: Image.asset(
                             'assets/images/Group 57.png',
                           )),
@@ -52,13 +53,23 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Column(
                   children: [
-                    Text(
-                      'Services offered by Budget Engineers',
-                      style: TextStyle(
-                          fontFamily: 'CircularStd-Bold',
-                          fontSize: 23,
-                          color: Colors.white),
-                    ),
+                    Row(children: [
+                      SizedBox(width: 10,),
+                      Text(
+                        'Services offered by ',
+                        style: TextStyle(
+                            fontFamily: 'CircularStd-Bold',
+                            fontSize: 20,
+                            color: Colors.white),
+                      ),
+                      Text(
+                        'Budget Engineers',
+                        style: TextStyle(
+                            fontFamily: 'CircularStd-Bold',
+                            fontSize: 25,
+                            color: buttonBg),
+                      ),
+                    ]),
                     Container(
                       width: 370,
                       child: Divider(
@@ -69,6 +80,26 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
+            SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  serviceInfoWidget("Vigilance of Plot",
+                      "Monthly video tour of plot", 0),
+                  serviceInfoWidget("Cleaning plot",
+                      "Cutting un-wanted-grass / shrubs", 1),
+                  serviceInfoWidget(
+                      "Fencing Plot", "Barb wire fencing with MS gate", 2),
+                  serviceInfoWidget("Compound Wall",
+                      "4 ft height solid block wall with MS gate", 3),
+                  serviceInfoWidget("EC / Khatha",
+                      "Liaisons with Govt. officials to get documentation", 4),
+                  serviceInfoWidget("Rent",
+                      "BE will manage to get tenent & agreement formalities", 5),
+                ],
+              ),
+            ),
+              /*
                 serviceInfoWidget(false, "Vigilance of Plot",
                     "Monthly video tour of plot", 0),
                 serviceInfoWidget(true, "Cleaning plot",
@@ -79,12 +110,9 @@ class _LoginPageState extends State<LoginPage> {
                     "4 ft height solid block wall with MS gate", 3),
                 serviceInfoWidget(false, "EC / Khatha",
                     "Liaisons with Govt. officials to get documentation", 4),
-                serviceInfoWidget(
-                    true,
-                    "Rent",
-                    "BE will manage to get tenent & agreement formalities\n"
-                        "BE charges additional half month rental as service charge",
-                    5),
+                serviceInfoWidget(true, "Rent",
+                    "BE will manage to get tenent & agreement formalities", 5),
+                */
                 signInButton(context),
               ],
             ),
@@ -95,14 +123,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Padding serviceInfoWidget(
-      bool isLeft, String serviceName, String serviceInfo, int index) {
+      String serviceName, String serviceInfo, int index) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20, top: 20.0),
-      /*
-      padding: (isLeft)
-          ? const EdgeInsets.only(left: 20, top: 20.0)
-          : const EdgeInsets.only(right: 50, top: 20.0),
-       */
+      padding: const EdgeInsets.only(left: 20, top: 13.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -116,11 +139,11 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(
                       fontFamily: 'CircularStd-Bold',
                       fontSize: 20,
-                      color: Colors.yellow),
+                      color: buttonBg),
                 ),
               ),
               Container(
-                height: 40,
+                height: 28,
                 width: 130,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
@@ -145,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                 //textAlign: TextAlign.start,
                 style: TextStyle(
                     fontFamily: 'CircularStd-Bold',
-                    fontSize: 15,
+                    fontSize: 16,
                     color: Colors.white),
               ),
             ),
@@ -166,9 +189,12 @@ class _LoginPageState extends State<LoginPage> {
             userExists.then((bool x) {
               if (x == false) {
                 print("User not yet registered.");
+                Toast.show(
+                    "User not registered.. going for registration", context);
                 registerUser();
               } else {
                 print('User already registered.');
+                Toast.show("User already present..", context);
                 if (userType == 'Regular') {
                   Navigator.of(context).push(
                     MaterialPageRoute<void>(

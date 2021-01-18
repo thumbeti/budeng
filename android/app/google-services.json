@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "604468657973-qrji47hf2pi5c07fobp7sde4cncmo8m5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.budgetengineers.budeng",
+            "certificate_hash": "e74ca2a069ec00362561c34b7e9953ced8f7efa6"
+          }
+        },
+        {
           "client_id": "604468657973-qvugvnet8sbf5o5881uo2827scb49hpm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
