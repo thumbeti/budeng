@@ -308,7 +308,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       ),
                     ),
                     Flexible(
-                      child: Text(
+                      child: document['propertyAddress'] == null? Container() :
+                      Text(
                         document['propertyAddress'],
                         style: TextStyle(
                             fontFamily: 'CircularStd-Bold',
@@ -394,7 +395,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                             color: Color(0xff000000).withOpacity(1)),
                       ),
                       Flexible(
-                        child: Text(
+                        child: document['services'] == null? Container() :
+                        Text(
                           document['services'].toString(),
                           style: TextStyle(
                               fontFamily: 'CircularStd-Medium',

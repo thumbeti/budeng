@@ -321,13 +321,13 @@ class _UserRegistrationState extends State<UserRegistration> {
                                           width: 200,
                                           child: TextFormField(
                                             validator: (value) {
-                                              if (value.isEmpty) {
+                                              if (value == null || value.isEmpty) {
                                                 return 'Please enter phone number';
                                               }
                                               return null;
                                             },
-                                            initialValue: widget.phoneNum == null
-                                                ? '+x xxx xxx xxxx'
+                                            initialValue: widget.phoneNum == null ?
+                                                '+x xxx xxx xxxx'
                                                 : widget.phoneNum,
                                             onChanged: (String phoneNum) {
                                               print('new numb:' + phoneNum);
