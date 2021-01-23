@@ -36,7 +36,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     itemStream = FirebaseFirestore.instance
         .collection('users')
         .doc(widget.currentUser.email)
-        .collection('subscriptions')
+        .collection('subscriptions').orderBy('subscriptionDate', descending: true)
         .snapshots();
     super.initState();
     // Create TabController for getting the index of current tab
@@ -348,7 +348,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0, bottom: 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         'Subscribed for:',
@@ -357,6 +357,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                             fontSize: 18,
                             color: Color(0xff000000).withOpacity(1)),
                       ),
+                      SizedBox(width: 10,),
                       Text(
                         document['noYears'].toString() + ' years.',
                         style: TextStyle(
@@ -364,28 +365,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                             fontSize: 20,
                             color: Colors.black),
                       ),
-                      Container(
-                        height: 30,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          color: buttonBg,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Center(
-                          child: Text(
-                            (index + 1).toString(),
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 22),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0, bottom: 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         'Subscribed services:  ',

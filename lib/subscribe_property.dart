@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:budeng/constants/colors.dart';
 import 'package:budeng/home.dart';
 import 'package:budeng/sign_in.dart';
@@ -30,6 +32,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
   final _formKey = GlobalKey<FormState>();
   Razorpay razorpay;
   double totalPrice;
+  double priceInPaise;
   var items = ['Bangalore', 'Chennai', 'Hyderabad'];
   var yearsItems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   List<String> selectedServicesStr = [];
@@ -45,7 +48,8 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
     razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handlerExternalWallet);
 
     totalPrice = 0.0;
-    getYears(yearsItems[2]);
+    priceInPaise = 0.0;
+    getYears(yearsItems[0]);
     getCity(items[0]);
 
     if (widget.servicesSelected[vigilance])
@@ -66,9 +70,14 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
   }
 
   void openCheckout() {
+    setState(() {
+      int fac = pow(10, 2);
+      priceInPaise = (totalPrice * 100 * fac).round() / fac;
+    });
+
     var options = {
       "key": "rzp_test_iN0mm4sTh9A0YI",
-      "amount": totalPrice * 100,
+      "amount": priceInPaise,
       "name": "BE App",
       "description": "Payment for the subscribed services",
       "prefill": {
@@ -81,6 +90,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
     };
 
     try {
+      print('Amount: ' + priceInPaise.toString());
       razorpay.open(options);
     } catch (e) {
       print(e.toString());
@@ -536,7 +546,10 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                                       return null;
                                     },
                                     maxLines: 1,
-                                    maxLength: 6,
+                                    //maxLength: 6,
+                                    inputFormatters: [
+                                      new LengthLimitingTextInputFormatter(6),// for mobile
+                                    ],
                                     style: TextStyle(
                                       fontFamily: 'CircularStd-Book',
                                       fontSize: 20,
@@ -906,9 +919,10 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
             ? (BEServicesCharges[rent] * area) + expectingRent / 2
             : 0);
 
-    print('Total price .. ' + t_total.toString());
+    print('Total price t_total .. ' + t_total.toString());
     setState(() {
-      totalPrice = t_total.toDouble();
+      int fac = pow(10, 2);
+      totalPrice = (t_total * fac).round() / fac;
     });
     print('Total price .... ' + totalPrice.toString());
     return;

@@ -50,7 +50,7 @@ class _UserRegistrationState extends State<UserRegistration> {
     Map<String, dynamic> users = {
       'userName': userName,
       'email': widget.currentUser.email,
-      'phoneNum': phoneNum,
+      'phoneNum': (phoneNum == null ||  phoneNum.isEmpty)? widget.phoneNum : phoneNum,
       'address': address,
       'city': city,
       'country': country,
@@ -330,7 +330,6 @@ class _UserRegistrationState extends State<UserRegistration> {
                                                 '+x xxx xxx xxxx'
                                                 : widget.phoneNum,
                                             onChanged: (String phoneNum) {
-                                              print('new numb:' + phoneNum);
                                               getPhoneNum(phoneNum);
                                             },
                                             style: TextStyle(
@@ -376,7 +375,7 @@ class _UserRegistrationState extends State<UserRegistration> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  Home(widget.currentUser, widget.phoneNum)),
+                                  Home(widget.currentUser, phoneNum)),
                         );
                       }
                     },
