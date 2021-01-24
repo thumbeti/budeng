@@ -439,7 +439,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 : serviceCheckBox(3, false),
             serviceCheckBox(4, false),
             serviceCheckBox(5, false),
-            SizedBox(height: 20),
+            SizedBox(height: 5),
             InkWell(
               onTap: () {
                 if (isServicesSelected()) {
@@ -463,13 +463,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                               ),
                             ),
                             actions: <Widget>[
-                              FlatButton(
+                              TextButton(
                                 child: Text(
-                                  'Close me!',
+                                  'Got it!',
                                   style: TextStyle(
                                       fontFamily: 'CircularStd-Bold',
                                       fontSize: 20,
-                                      color: Colors.amber),
+                                      color: buttonBg),
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).pop();
@@ -480,9 +480,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 }
               },
               child: Padding(
-                padding: const EdgeInsets.only(top: 10.0),
+                padding: const EdgeInsets.only(top: 5.0),
                 child: Container(
-                  height: 50,
+                  height: 40,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: buttonBg,

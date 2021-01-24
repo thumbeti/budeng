@@ -47,10 +47,14 @@ class _UserRegistrationState extends State<UserRegistration> {
         .collection('users')
         .doc(widget.currentUser.email);
 
+    if (phoneNum == null ||  phoneNum.isEmpty) {
+      phoneNum = widget.phoneNum;
+    }
+
     Map<String, dynamic> users = {
       'userName': userName,
       'email': widget.currentUser.email,
-      'phoneNum': (phoneNum == null ||  phoneNum.isEmpty)? widget.phoneNum : phoneNum,
+      'phoneNum': phoneNum,
       'address': address,
       'city': city,
       'country': country,
