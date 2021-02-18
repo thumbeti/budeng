@@ -236,7 +236,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.data.documents.length == 0) {
+                  } else if (snapshot.data.docs.length == 0) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -257,10 +257,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     );
                   }
                   return ListView.builder(
-                      itemCount: snapshot.data.documents.length,
+                      itemCount: snapshot.data.docs.length,
                       itemBuilder: (context, index) {
                         return listTileBuilder(
-                            context, snapshot.data.documents[index], index);
+                            context, snapshot.data.docs[index], index);
                       },
                       shrinkWrap: true,
                       physics: ClampingScrollPhysics());

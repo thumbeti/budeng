@@ -9,7 +9,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:budeng/constants/service_tasks.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:toast/toast.dart';
@@ -105,7 +107,9 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
     setState(() {
       getPaymentId(response.paymentId);
     });
+    Toast.show("Sending Email...", context);
     sendEmail();
+    //sendEmail_2();
     Navigator.of(context).push(
       MaterialPageRoute<void>(
           builder: (_) => Home(widget.currentUser, widget.phoneNum)),
@@ -151,6 +155,63 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
           "Thanks,<br>Budget Engineers team.</p>";
 
     try {
+      final sendReport = await send(message, smtpServer);
+      print('Message sent: ' + sendReport.toString());
+    } on MailerException catch (e) {
+      print('Message not sent.');
+      for (var p in e.problems) {
+        print('Problem: ${p.code}: ${p.msg}');
+      }
+    }
+  }
+
+  sendEmail_2() async {
+    String username = 'budgetengineers1980@gmail.com';
+    String password = 'Zaq1@wsx';
+
+    //final smtpServer = gmail(username, password);
+    SmtpServer smtpServer;
+
+    // Use the SmtpServer class to configure an SMTP server:
+    // final smtpServer = SmtpServer('smtp.domain.com');
+    // See the named arguments of SmtpServer for further configuration
+    // options.
+
+    // Create our message.
+    final message = Message()
+      ..from = Address(username, 'Budget Engineers attempt 2')
+      ..recipients.add(widget.currentUser.email)
+      ..ccRecipients.addAll(['budgetengineers1980@gmail.com'])
+      ..bccRecipients.add(Address('thumbeti@gmail.com'))
+      ..subject = 'Thanks for connecting Budget Engineers :: ${DateTime.now()}'
+      ..html = "<h3>Hi ${widget.currentUser.displayName},</h3>\n"
+          "<p>Your property is subscribed."
+          "<br><br>   Address: ${propertyAddress},"
+          "<br>   Subscribed for: ${years} years,"
+          "<br>   Subscribed services: ${selectedServicesStr}."
+          "<br>   PaymentId: ${paymentId}"
+          "<br><br>"
+          "Thanks,<br>Budget Engineers team.</p>";
+
+    try {
+      // Setting up Google SignIn
+      final googleSignIn = GoogleSignIn.standard(scopes: [
+        'email',
+        'https://www.googleapis.com/auth/gmail.send'
+      ]);
+      // Signing in
+      final account = await googleSignIn.signIn();
+
+      if (account == null) {
+        // User didn't authorize
+        return;
+      }
+
+      final auth = await account.authentication;
+
+      // Creating SMTP server from the access token
+      smtpServer = gmailXoauth2(auth.accessToken);
+
       final sendReport = await send(message, smtpServer);
       print('Message sent: ' + sendReport.toString());
     } on MailerException catch (e) {
@@ -847,7 +908,6 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                   InkWell(
                     onTap: () {
                       if (_formKey.currentState.validate()) {
-                        //sendEmail();
                         openCheckout();
                       }
                     },

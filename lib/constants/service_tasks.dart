@@ -26,14 +26,15 @@ List BEServices = ['Vigilance of Plot',
                   'EC / Khatha',
                   'Rent'];
 
-List BEServicesChargesStr = ['\u{20B9}1.25/sqft/year',
-  '\u{20B9}1.85/sqft',
-  '\u{20B9}26.25/sqft',
-  '\u{20B9}120.45/sqft',
+List BEServicesChargesStr = [
+  '\u{20B9}1/sqft/year',
+  '\u{20B9}1.25/sqft',
+  '\u{20B9}21/sqft',
+  '\u{20B9}100/sqft',
   '\u{20B9}1/sqft',
   'Half month rent'];
 
-List BEServicesCharges = [1.25, 1.85, 26.25, 120.45, 1, 1];
+List BEServicesCharges = [1, 1.25, 21, 100, 1, 1];
 
 List BEServicesInfo = [
               'a) Monthly video tour of plot with market Information\n' +
