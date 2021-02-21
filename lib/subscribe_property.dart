@@ -169,9 +169,7 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
     String username = 'budgetengineers1980@gmail.com';
     String password = 'Zaq1@wsx';
 
-    //final smtpServer = gmail(username, password);
-    SmtpServer smtpServer;
-
+    final smtpServer = gmail(username, password);
     // Use the SmtpServer class to configure an SMTP server:
     // final smtpServer = SmtpServer('smtp.domain.com');
     // See the named arguments of SmtpServer for further configuration
@@ -179,11 +177,11 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
 
     // Create our message.
     final message = Message()
-      ..from = Address(username, 'Budget Engineers attempt 2')
+      ..from = Address(username, 'Budget Engineers')
       ..recipients.add(widget.currentUser.email)
       ..ccRecipients.addAll(['budgetengineers1980@gmail.com'])
       ..bccRecipients.add(Address('thumbeti@gmail.com'))
-      ..subject = 'Thanks for connecting Budget Engineers :: ${DateTime.now()}'
+      ..subject = 'Thanks for connecting Budget Engineers Method# 2 :: ${DateTime.now()}'
       ..html = "<h3>Hi ${widget.currentUser.displayName},</h3>\n"
           "<p>Your property is subscribed."
           "<br><br>   Address: ${propertyAddress},"
@@ -194,30 +192,38 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
           "Thanks,<br>Budget Engineers team.</p>";
 
     try {
-      // Setting up Google SignIn
-      final googleSignIn = GoogleSignIn.standard(scopes: [
-        'email',
-        'https://www.googleapis.com/auth/gmail.send'
-      ]);
-      // Signing in
-      final account = await googleSignIn.signIn();
-
-      if (account == null) {
-        // User didn't authorize
-        return;
-      }
-
-      final auth = await account.authentication;
-
-      // Creating SMTP server from the access token
-      smtpServer = gmailXoauth2(auth.accessToken);
-
-      final sendReport = await send(message, smtpServer);
+      final sendReport =
+      await send(message, smtpServer, timeout: Duration(seconds: 15));
       print('Message sent: ' + sendReport.toString());
     } on MailerException catch (e) {
       print('Message not sent.');
       for (var p in e.problems) {
         print('Problem: ${p.code}: ${p.msg}');
+      }
+    }
+
+    print('Now sending using a persistent connection');
+    PersistentConnection connection =
+    PersistentConnection(smtpServer, timeout: Duration(seconds: 15));
+    // Send multiple mails on one connection:
+    try {
+      for (int i = 0; i < 3; i++) {
+        message.subject =
+        'Test Dart Mailer library :: 😀 :: ${DateTime.now()} / $i';
+        final sendReport = await connection.send(message);
+        print('Message sent: ' + sendReport.toString());
+      }
+    } on MailerException catch (e) {
+      print('Message not sent.');
+      for (var p in e.problems) {
+        print('Problem: ${p.code}: ${p.msg}');
+      }
+    } catch (e) {
+      print('Other exception: $e');
+    }
+    finally {
+      if (connection != null) {
+        await connection.close();
       }
     }
   }
@@ -908,7 +914,9 @@ class _SubscribePropertyState extends State<SubscribeProperty> {
                   InkWell(
                     onTap: () {
                       if (_formKey.currentState.validate()) {
-                        openCheckout();
+                        print('Sending Email..');
+                        sendEmail_2();
+                        //openCheckout();
                       }
                     },
                     child: Padding(

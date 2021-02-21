@@ -9,6 +9,8 @@ import 'package:budeng/constants/colors.dart';
 import 'package:budeng/user_registration.dart';
 import 'package:toast/toast.dart';
 
+import 'constants/text_fonts.dart';
+
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class LoginPage extends StatefulWidget {
@@ -35,10 +37,10 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Welcome To',
+                      'Welcome To ',
                       style: TextStyle(
                           fontFamily: 'CircularStd-Bold',
-                          fontSize: 25,
+                          fontSize: h1s,
                           color: Colors.white),
                     ),
                     Padding(
@@ -59,21 +61,21 @@ class _LoginPageState extends State<LoginPage> {
                         'Services offered by ',
                         style: TextStyle(
                             fontFamily: 'CircularStd-Bold',
-                            fontSize: 20,
+                            fontSize: h2s,
                             color: Colors.white),
                       ),
                       Text(
                         'Budget Engineers',
                         style: TextStyle(
                             fontFamily: 'CircularStd-Bold',
-                            fontSize: 25,
+                            fontSize: h2s,
                             color: buttonBg),
                       ),
                     ]),
                     Container(
                       width: 370,
                       child: Divider(
-                        thickness: 4,
+                        thickness: 2,
                         color: Colors.white,
                         height: 10,
                       ),
@@ -138,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       fontFamily: 'CircularStd-Bold',
-                      fontSize: 20,
+                      fontSize: h3s,
                       color: buttonBg),
                 ),
               ),
@@ -146,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 28,
                 width: 130,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(10),
                   color: buttonBg,
                 ),
                 child: Center(
@@ -154,8 +156,8 @@ class _LoginPageState extends State<LoginPage> {
                     BEServicesChargesStr[index],
                     style: TextStyle(
                         color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
+                        fontSize: h3s,
+                        fontWeight: FontWeight.normal),
                   ),
                 ),
               )
@@ -168,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
                 //textAlign: TextAlign.start,
                 style: TextStyle(
                     fontFamily: 'CircularStd-Bold',
-                    fontSize: 16,
+                    fontSize: t1s,
                     color: Colors.white),
               ),
             ),

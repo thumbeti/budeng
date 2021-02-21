@@ -1,16 +1,3 @@
-List svs_items = [
-  "Video tour of site with market Information. - Rs1 /sqft/year",
-  "Site boundary stones (Assist in identifying with Pics) - Rs1 /sqft/year",
-  "Tax (Assist in paying with online / offline information) - Rs1 /sqft/year",
-];
-List mvs_items = [
-  "Latest EC (Assist in obtaining) - Rs1 /sqft/year",
-  "Latest Khatha (Assist in obtaining)",
-  "Cleaning (Assist in getting it done)",
-  "Fencing (Assist in getting it done)",
-  "Boundary Wall (Assist in getting it done)",
-  "Rent / Lease Out (Assistance)",
-];
 
 int vigilance = 0;
 int cleaning = 1;
@@ -35,6 +22,8 @@ List BEServicesChargesStr = [
   'Half month rent'];
 
 List BEServicesCharges = [1, 1.25, 21, 100, 1, 1];
+
+List BEServicesGSTs = [0.18, 0.22, 3.78, 18.06, 0.18, 0];
 
 List BEServicesInfo = [
               'a) Monthly video tour of plot with market Information\n' +
